@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<!--[if lte IE 8 ]>
+<html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<!--
+***************  *      *     *
+      8          *    *       *
+      8          *  *         *
+      8          **           *
+      8          *  *         *
+      8          *    *       *
+      8          *      *     *
+      8          *        *   ***********    -----Theme By Kieran(http://go.kieran.top)
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<!--<![endif]-->
+
+<head>
+  <title>高斯整环中的素元 | 魔法炮</title>
+  <!-- Meta data -->
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="魔法炮">
+    <meta name="author" content="ZidaneAndMessi">
+    <meta name="description" content="ZidaneAndMessi的博客" />
+    <meta name="keywords" content="" />
+
+    <!-- Favicon, (keep icon in root folder) -->
+    <link rel="Shortcut Icon" href="/img/favicon.ico" type="image/ico">
+
+    <link rel="alternate" href="/atom.xml" title="魔法炮" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/all.css" media="screen" type="text/css">
+	
+    <link rel="stylesheet" href="/highlightjs/vs.css" type="text/css">
+    
+ 
+
+    <!-- Custom stylesheet, (add custom styles here, always load last) -->
+    <!-- Load our stylesheet for IE8 -->
+    <!--[if IE 8]>
+    <link rel="stylesheet" type="text/css" href="/css/ie8.css" />
+    <![endif]-->
+
+    <!-- Google Webfonts (Monserrat 400/700, Open Sans 400/600) -->
+    <link href='//fonts.useso.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <link href='//fonts.useso.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+
+    <!-- Load our fonts individually if IE8+, to avoid faux bold & italic rendering -->
+    <!--[if IE]>
+    <link href='http://fonts.useso.com/css?family=Montserrat:400' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.useso.com/css?family=Montserrat:700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.useso.com/css?family=Open+Sans:400' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.useso.com/css?family=Open+Sans:600' rel='stylesheet' type='text/css'>
+    <![endif]-->
+
+    <!-- jQuery | Load our jQuery, with an alternative source fallback to a local version if request is unavailable -->
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
+
+    <!-- Load these in the <head> for quicker IE8+ load times -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="/js/html5shiv.min.js"></script>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+
+
+
+
+
+
+
+
+  
+  
+  
+
+  
+  <style>.col-md-8.col-md-offset-2.opening-statement img{display:none;}</style>
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body id="index" class="lightnav animsition">
+
+      <!-- ============================ Off-canvas navigation =========================== -->
+
+    <div class="sb-slidebar sb-right sb-style-overlay sb-momentum-scrolling">
+        <div class="sb-close" aria-label="Close Menu" aria-hidden="true">
+            <img src="/img/close.png" alt="Close"/>
+        </div>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu">
+            <li><a href="/" class="animsition-link">主页</a></li>
+            <li><a href="/archives" class="animsition-link">目录</a></li>
+            <!-- Dropdown Menu -->
+			 
+            
+        	<li>
+        		<a class="sb-toggle-submenu">分类<span class="sb-caret"></span></a>
+            	<ul class="sb-submenu">
+				  	
+				    <li><a href="/categories/Coding/" class="animsition-link">Coding<small>(2)</small></a></li>
+				    
+				    <li><a href="/categories/Game/" class="animsition-link">Game<small>(1)</small></a></li>
+				    
+				    <li><a href="/categories/Interest/" class="animsition-link">Interest<small>(5)</small></a></li>
+				    
+				    <li><a href="/categories/Life/" class="animsition-link">Life<small>(7)</small></a></li>
+				    
+				    <li><a href="/categories/Math/" class="animsition-link">Math<small>(1)</small></a></li>
+				    
+				    <li><a href="/categories/OI/" class="animsition-link">OI<small>(4)</small></a></li>
+				    
+				    <li><a href="/categories/Physics/" class="animsition-link">Physics<small>(1)</small></a></li>
+				    
+				</ul>
+        	</li>
+			
+            
+            <li>
+                <a class="sb-toggle-submenu">友情链接<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                    <li><a href="http://kuribohg.github.io/" target="_blank">KuribohG</a></li>
+                    
+                    <li><a href="http://orzwzh.com/" target="_blank">wzh</a></li>
+                    
+                    <li><a href="http://www.cnblogs.com/xuruifan/" target="_blank">xuruifan</a></li>
+                    
+                    <li><a href="http://blog.csdn.net/commonc/" target="_blank">commonc</a></li>
+                    
+                    <li><a href="http://blog.csdn.net/neither_nor/" target="_blank">neither_nor</a></li>
+                    
+                    <li><a href="http://footoredo.cat/" target="_blank">footoredo</a></li>
+                    
+                </ul>
+            </li>
+            
+        </ul>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu secondary">
+            <li><a href="/message">留言板</a></li>
+            <li><a href="/about">关于我</a></li>
+            <li><a href="http://106.14.159.92:81/" target="_blank">魔法炮OJ</a></li>
+        </ul>
+        <form>
+    </div>
+    
+    <!-- ============================ END Off-canvas navigation =========================== -->
+
+    <!-- ============================ #sb-site Main Page Wrapper =========================== -->
+
+    <div id="sb-site">
+        <!-- #sb-site - All page content should be contained within this id, except the off-canvas navigation itself -->
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+        <div id="navigation" class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <!-- Nav logo -->
+                    <div class="logo">
+                        <a href="/" title="Logo" class="animsition-link">
+                         <img src="/img/logo.png" alt="Logo" width="35px;"/> 
+                        </a>
+                    </div>
+                    <!-- // Nav logo -->
+                    <!-- Info-bar -->
+                    <nav>
+                        <ul class="nav">
+                            <li><a href="/" class="animsition-link">魔法炮</a></li>
+                            <li class="nolink">ZIDANEANDMESSI</li>
+                            
+                            <li><a href="https://github.com/zidaneandmessi/" title="Github" target="_blank"><i class="icon-github"></i></a></li>
+                            
+                            
+                            <li><a href="https://twitter.com/zidaneandmessi/" title="Twitter" target="_blank"><i class="icon-twitter"></i></a></li>
+                            
+                            
+                            <li><a href="https://www.facebook.com/zidaneandmessi/" title="Facebook" target="_blank"><i class="icon-facebook"></i></a></li>
+                            
+                            
+                            
+                            <li><a href="http://weibo.com/zidaneandmessi/" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a></li>
+                            
+                            <li class="nolink">Here I am.</li>
+                            
+                        </ul>
+                    </nav>
+                    <!--// Info-bar -->
+                </div>
+                <!-- // .container -->
+                <div class="learnmore sb-toggle-right">More</div>
+                <button type="button" class="navbar-toggle menu-icon sb-toggle-right" title="More">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar before"></span>
+                <span class="icon-bar main"></span>
+                <span class="icon-bar after"></span>
+                </button>
+            </div>
+            <!-- // .navbar-inner -->
+        </div>
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+        <!-- ============================ Hero Image =========================== -->
+
+        <section id="hero" class="scrollme">
+            <div class="container-fluid element-img" style="background: url(/img/bg_img.jpg) no-repeat center center fixed;background-size: cover">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 vertical-align cover boost text-center">
+                        <div class="center-me animateme" data-when="exit" data-from="0" data-to="0.6" data-opacity="0" data-translatey="100">
+                            <div>
+                            	
+                                <h2></h2>
+                                <p></p>
+                                
+				    			
+                                <h2></h2>
+                                <p></p>
+                                
+				    			
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- // .col-md-12 -->
+                </div>
+                <div class="herofade beige-dk"></div>
+            </div> 
+        </section>
+
+        <!-- Height spacing helper -->
+        <div class="heightblock"></div>
+        <!-- // End height spacing helper -->
+
+        <!-- ============================ END Hero Image =========================== -->
+      
+<section id="intro">
+    <div class="container">
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2016-11-16T02:16:37.000Z" itemprop="datePublished">
+          2016-11-16
+      </time>
+    
+    
+    
+    | 
+    <a href='/categories/Math/'>Math</a>
+    
+    
+    
+    
+    
+    | 
+    <a href='/tags/数论/'>数论</a>
+    
+    
+    
+</span>
+                <h1>高斯整环中的素元</h1>
+            </div>
+        </div>
+        <div class="col-md-8 col-md-offset-2">
+      		<p>代数真有趣啊！<a id="more"></a></p>
+<p>闲着没事玩一玩，求高斯整环中的所有素元。 </p>
+<p>首先给出高斯整环和素元的概念。</p>
+<p><strong>高斯整环：$\mathbb{Z}[i]=\lbrace a+bi|a,b \in \mathbb{Z} \rbrace$，由于对减(加)法和乘法运算封闭，因此是一个数环。</strong><br><strong>素元：在一个代数系统$\mathbb{F}$中，若一个元素$p$满足$\forall a,b \in \mathbb{F}$，若$p|ab$，则$p|a$或$p|b$。</strong></p>
+<p>另外，另一个概念叫不可约元，指的是不可分解为两个非单位元的乘积的元素。在$\mathbb{Z}[i]$中，一共有四个单位元，分别为$±1, ±i$。并且在$\mathbb{Z}[i]$中，素元和不可约元是等价的。因此$\mathbb{Z}[i]$中的任意素元$\pi$只有八个因子$±1, ±\pi, ±i, ±i\pi$，也就是说它们分解成两个数的乘积，其中一定有一个是单位元。<font color="#BEBEBE">（注：在某些代数系统例如复数域$\mathbb{C}$中，素元和不可约元并不等价。比如$9=3×3=(2+\sqrt{5}i)(2-\sqrt{5}i)$，这里的$3,2+\sqrt{5}i, 2-\sqrt{5}i$都是不可约元，但相互不整除，所以都不是素元。）</font> </p>
+<p>一个非常简单的结论：<strong>$\mathbb{Z}$中的单位元模长为$1$，$\mathbb{Z}$中模长为$1$的元素是单位元。</strong>虽然很显然，但是这却是判断素元的关键结论。</p>
+<p>下面开始找这些素元。显然有两种形式，一种是实部虚部都不为零的复杂素元<font color="dodgerblue">$^①$ </font>，一种是只有实部或者只有虚部的简单素元<font color="lightcoral">$^②$</font>。这两种形式分开考虑。 </p>
+<font color="dodgerblue"><br>①复杂素元<br><br>我们发现，当两个复数相乘的时候，得到复数的模长也是它们两个模长的乘积。也就是说，$x+yi=(a+bi)(c+di) \Rightarrow \sqrt{x^2+y^2}=\sqrt{a^2+b^2} \cdot \sqrt{c^2+d^2} \Rightarrow x^2+y^2=(a^2+b^2)(c^2+d^2)$。如果这里$x^2+y^2$是素数，那么$a+bi$和$c+di$一定有一个模长为$1$，即为单位元。所以<strong>模长的平方为素数的任何高斯整数都是素元</strong>。<br><br>那么如果模长的平方不为素数呢？是否一定可以分解成两个非单位元的乘积？<br><br>答案是肯定的。下面我们就要证明复杂素元模长的平方一定是素数。为了证明这一点，我们需要两个引理的帮助。<br><br><strong>引理1：若素元$a+bi \in \mathbb{Z}[i]$，且$a,b≠0$，则$(a,b)=1$。</strong><br><br>证明显然，如果$a,b$不互素，那么它们的最大公约数就是$a+bi$的一个因子，则$a+bi$不是素元。<br><br><strong>引理2：设$(a,b)=1$，若有$x+yi \in \mathbb{Z}[i]$，使得$(a+bi)(x+yi)=n$，$n \in \mathbb{Z}$，则$a^2+b^2|n$。</strong><br><br>这个就没那么显然了。我们可以把括号打开，得到方程组$\begin{cases}<br>ax-by=n\\<br>ay+bx=0\\<br>\end{cases}<br>$，解得$\begin{cases}<br>x=\frac{an}{a^2+b^2}\\<br>y=-\frac{bm}{a^2+b^2}\\<br>\end{cases}<br>$。根据裴蜀定理，$(a,b)=1$那么一定存在整数$d_1,d_2$，使得$ad_1+bd_2=1$，即$(an)d_1+(bn)d_2=n$。带入上式得到$(a^2+b^2)(xd_1+yd_2)=n$，所以$a^2+b^2|n$。<br><br>我们任给出一个复杂素元$a+bi \in \mathbb{Z}[i]$，$a,b≠0$。假设$a^2+b^2=n_1n_2$，$n_1, n_2 \in N$，则$n_1n_2=(a+bi)(a-bi)$。由素元的定义可知$a+bi|n_1$或$a+bi|n_2$。<br><br>不妨设$a+bi|n1$，则存在$x+yi \in \mathbb{Z}[i]$使得$(a+bi)(x+yi)=n_1$。由引理1，$(a,b)=1$，因此由引理2，$a^2+b^2|n_1$。即存在自然数$k$，使得$(a^2+b^2)k=n_1$。所以$a^2+b^2=n_1n_2=(a^2+b^2)k    n_2$。因此$kn_2=1$，$k=1, n_2=1$。所以$a^2+b^2$是素数。<br><br>到此，复杂素元全部研究完毕，<strong>复杂素元仅包括所有模长的平方为素数的高斯整数。</strong><br><br></font>
+
+<font color="lightcoral"><br>②简单素元<br><br>对于简单素元，都可以表示成$k$或$ki$，$k \in \mathbb{Z}$的形式。考虑到$(a+bi)(c+di)=(ac-bd)+(ad+bc)i$，而$(a-bi)(d+ci)=(ad+bc)+(ac-bd)i$，二者实部虚部正好相反。因此如果某个$k$能分解成两个非单位元的乘积，就可以轻松地构造出$ki$的分解方式，反之亦然。所以$k$和$ki$要么都是素元，要么都不是素元。所以只需要研究整数简单素元的情况。再进一步，去掉负数，只需要研究自然数域内的简单素元。<br><br>就拿上面的$k$来说，很显然如果$k$不是素数，那么它在自然数域内就可以分解成两个大于$1$的数之积，一定不可能是素元。而素数$2$比较特殊地又能分成$1+i$和$1-i$的乘积，因此也不是素元。我们把问题范围进一步缩小，考虑所有奇素数。<br><br>上面对$2$的分解给了我们启示，$(a+bi)(a-bi)=a^2+b^2$，某个数可以如此分解，说明它能被写成两个正整数的完全平方和，那么<strong>所有能写成两个正整数完全平方和的奇素数一定不是素元</strong>。<br><br>而如果一个奇素数不能写成两个正整数的完全平方和，如下可以证明它一定是素元。<br><br>任取一个这样的奇素数$p$，假设它不是素元，则可以写成$p=(a+bi)(c+di)=(ac-bd)+(ad+bc)i$，所以$\begin{cases}<br>ac-bd=p\\<br>bc+ad=0\\<br>\end{cases}<br>$，那么$(ac-bd)-(bc+ad)i=(a-bi)(c-di)=p$。两式相乘得：$p^2=(a+bi)(a-bi)(c+di)(c-di)=(a^2+b^2)(c^2+d^2)$。由于$p$是素数，所以$p^2$在正整数范围内只能被分解成$1×p^2, p×p, p^2×1$。于是有$\begin{cases}<br>a^2+b^2=1\\<br>c^2+d^2=p^2\\<br>\end{cases}$或$\begin{cases}<br>a^2+b^2=p\\<br>c^2+d^2=p\\<br>\end{cases}$或$\begin{cases}<br>a^2+b^2=p^2\\<br>c^2+d^2=1\\<br>\end{cases}<br>$。但是$p$不能写成两个正整数的完全平方和，所以第二种结果不可能成立。因此只能$a^2+b^2=1$或$c^2+d^2=1$，即$|a+bi|=1$或$|c+di|=1$，$a+bi$和$c+di$有一个是单位元。因此$p$不能分解成两个非单位元的乘积，所以$p$为素元。那么根据上面的结论，$p$的三个相伴元$-p,pi,-pi$也是素元。<br><br>所以<strong>简单素元仅包括不能表示成两个正整数的完全平方之和的奇素数及其所有相伴元（与单位元的乘积）</strong>。<br><br>接下来的任务已经很清楚了：找出什么样的奇素数能够写成两个正整数的完全平方之和。这就是著名的费马平方和定理。<br><br><strong>费马平方和定理：奇素数能表示为两个（非零）完全平方数之和的充分必要条件是该素数被$4$除余$1$。</strong><br><br>充分性很好证明，完全平方数被$4$除的余数只可能是$0$或$1$，故两个完全平方数的和不可能被$4$除余$3$。<br><br>必要性的证明过程篇幅过长，这里省略。百度百科上有欧拉在写给哥德巴赫的信中给出的五步证明。<a href="http://baike.baidu.com/link?url=ofNKq9TPLcMic38GgjJKkkIOnd4oePQB_UB4ymF5F5DAdS4aW2-BLwOH-nnBdUr-vxS100KTd2bNUfgKDz5QmK" target="_blank" rel="external">传送门</a><br></font>
+
+<p><br><br>综上所述，<strong>高斯整环$\mathbb{Z}[i]$中的所有素元包括①所有模长的平方为素数的高斯整数；②被$4$除余$3$的素数及其所有相伴元</strong>。</p>
+
+            <div class="clearfix"></div>
+            <hr class="nogutter">
+        </div>
+        <nav class="pagination" role="pagination">
+    
+    <a class="pull-left" href="/post/论文：时距轨迹探究/" style="float: left;">
+        ← 论文：时距轨迹探究
+    </a>
+    
+    
+    <a class="pull-right" href="/post/两个搞笑程序/">
+        两个搞笑程序 →
+    </a>
+    
+</nav>
+
+        <div class="duoshuo">
+<div class="ds-thread" data-thread-key="post/高斯整环中的素元/" data-title="高斯整环中的素元" data-url="http://zidaneandmessi.github.io/post/高斯整环中的素元/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"zidaneandmessi"};
+(function() {
+	var ds = document.createElement('script');
+	ds.type = 'text/javascript';ds.async = true;
+	ds.src = '//zidaneandmessi.github.io/embed.txt';
+	ds.charset = 'UTF-8';
+	(document.getElementsByTagName('head')[0] 
+	 || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+</div>
+    </div>
+</section>
+
+
+      
+<!-- ============================ Footer =========================== -->
+
+<footer>
+    <div class="container">
+    
+            <div class="copy">
+                <p>
+                    &copy; 2016 ZidaneAndMessi
+                </p>
+            </div>
+            <div class="social">
+            <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <span id="busuanzi_container_site_pv">
+			  <font size=1 color=#FFFFFF>
+			  总访客数<span id="busuanzi_value_site_uv"></span>人　总访问量<span id="busuanzi_value_site_pv"></span>次 
+			  </font>
+			  </span>
+                
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+</footer>
+
+<!-- ============================ END Footer =========================== -->
+      <!-- Load our scripts -->
+        
+<!-- Resizable 'on-demand' full-height hero -->
+<script type="text/javascript">
+    
+    var resizeHero = function () {
+        var hero = $(".cover,.heightblock"),
+            window1 = $(window);
+        hero.css({
+            "height": window1.height()
+        });
+    };
+    
+    resizeHero();
+    
+    $(window).resize(function () {
+        resizeHero();
+    });
+</script>
+<script src="/js/plugins.min.js"></script><!-- Bootstrap core and concatenated plugins always load here -->
+<script src="/js/jquery.flexslider-min.js"></script><!-- Flexslider plugin -->
+<script src="/js/scripts.js"></script><!-- Theme scripts -->
+
+<!-- Initiate flexslider plugin -->
+<script type="text/javascript">
+    $(document).ready(function($) {
+      $('.flexslider').flexslider({
+        animation: "fade",
+        prevText: "",
+        nextText: "",
+        directionNav: true
+      });
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    }); 
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+
+</script>
+
+</body>
+</html>
