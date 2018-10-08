@@ -293,7 +293,7 @@
 <p>$$l_{Gen}^{SR}=\sum_{n=1}^{N}-logD_{\theta_D}(G_{\theta_G}(I^{LR}))$$</p>
 <p>其中$D_{\theta_D}(G_{\theta_G}(I^{LR}))$表示的是判别器将生成器生成的图像判定为自然图像的概率。</p>
 <hr>
-<h2 id="2-FSRNet-End-to-End-Learning-Face-Super-Resolution-with-Facial-Priors"><a href="#2-FSRNet-End-to-End-Learning-Face-Super-Resolution-with-Facial-Priors" class="headerlink" title="[2] FSRNet: End-to-End Learning Face Super-Resolution with Facial Priors"></a><a href="https://arxiv.org/pdf/1711.10703.pdf" target="_blank" rel="external">[2] FSRNet: End-to-End Learning Face Super-Resolution with Facial Priors</a></h2><h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>首先是一个<a href="#4" title="Coarse SR Network">粗糙超分辨率网络</a>，生成一个粗糙的HR图像。然后将粗糙HR图像分别输入到两个分支：<a href="#5" title="Fine SR Encoder">精密超分辨率编码器</a>和<a href="#5" title="Prior Estimation Network">先验信息估测网络</a>。前者抓取图像的特征，后者对人脸的landmark和heatmap等信息做出估计。得到的图像特征和先验信息都被输入到<a href="#6" title="Fine SR Decoder">精密超分辨率解码器</a>中来还原HR图像。粗糙超分辨率网络后面的三个部分统称为精密超分辨率网络。FSRNet还加入了FSRGAN得到的Adversarial Loss，有助于生成更真实的人脸图像。</p>
+<h2 id="2-FSRNet-End-to-End-Learning-Face-Super-Resolution-with-Facial-Priors"><a href="#2-FSRNet-End-to-End-Learning-Face-Super-Resolution-with-Facial-Priors" class="headerlink" title="[2] FSRNet: End-to-End Learning Face Super-Resolution with Facial Priors"></a><a href="https://arxiv.org/pdf/1711.10703.pdf" target="_blank" rel="external">[2] FSRNet: End-to-End Learning Face Super-Resolution with Facial Priors</a></h2><h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>首先是一个<a href="#4" title="Coarse SR Network">粗糙超分辨率网络</a>，生成一个粗糙的HR图像。然后将粗糙HR图像分别输入到两个分支：<a href="#5" title="Fine SR Encoder">精密超分辨率编码器</a>和<a href="#5" title="Prior Estimation Network">先验信息估测网络</a>。前者抓取图像的特征，后者对人脸的landmark和heatmap等信息做出估计。得到的图像特征和先验信息都被输入到<a href="#6" title="Fine SR Decoder">精密超分辨率解码器</a>中来还原HR图像。粗糙超分辨率网络后面的三个部分统称为精密超分辨率网络。FSRNet还加入了<a href="#7">FSRGAN</a>得到的Adversarial Loss，有助于生成更真实的人脸图像。</p>
 <p><span id="3">两个有关的任务：<a href="#3" title="Face Alignment">人脸对齐</a>和<a href="#3" title="Face Parsing">人脸解析</a>。这是两个人脸超分辨率的新型评价指标，与传统的通过视觉感知来评价不同。</span></p>
 <p><span id="4">- <strong>Coarse SR Network</strong></span></p>
 <p>从原图像$\mathrm{x}$恢复一个粗糙的超分辨率图像$\mathrm{y}_c$，避免输入图像太过模糊无法进行先验估测。</p>
@@ -303,14 +303,28 @@
 <p>$$\mathrm{p}=\mathcal{P}(\mathrm{y}_c),\mathrm{f}=\mathcal{F}(\mathrm{y}_c)$$</p>
 <p>其中$\mathrm{f}$是编码器抽取出的特征，$\mathrm{p}$是估测网络得到的先验信息。</p>
 <p>任何真实物体的形状和纹理都有不同的分布，但我们选择刻画人脸的形状先验。原因有两点：1.在降低分辨率时形状会比纹理更好地保留，因此做超分辨率时也更容易取出；2.形状先验要比纹理先验更容易表示，对于人脸，人脸解析可以找出面部各部分的划分，landmark可以给出面部关键点精确的定位，这些都代表形状信息。而纹理信息就不好表示。</p>
+<p>采用沙漏结构估测面部关键点热图并解析成先验估测网络。<font color="#cccccc">这个沙漏结构看不太懂，需要看论文[Stacked hourglass networks for human pose estimation]</font></p>
+<p>编码器利用残差块来做特征抽取。先验特征已经被下采样为64×64，为了使feature的大小一致，编码器用大小3×3，步长为2的卷积层将feature map下采样为64×64，然后用ResNet的结构来抽取图像特征。</p>
 <p><span id="6">- <strong>Fine SR Decoder</strong></span></p>
 <p>$$\mathrm{y}=\mathcal{D}(\mathrm{f},\mathrm{p})$$</p>
 <p>$\mathrm{y}$就是最终得到的超分辨率结果图片。</p>
+<p>首先，先验信息$\mathrm{p}$和图像特征$\mathrm{f}$被连接在一起作为解码器的输入，然后用3×3的卷积层将feature map数量降为64，又用4×4的反卷积层将feature map上采样为128×128，接下来是3个残差块，用来解码特征，最后一层还是3×3的卷积层，用来还原图片。</p>
 <p><span>- <strong>Loss Function</strong></span></p>
 <p>给定$N$个样本的训练集$\{\mathrm{x}^{(i)},\tilde{\mathrm{y}}^{(i)},\tilde{\mathrm{p}}^{(i)}\}_{i=1}^{N}$，其中$\mathrm{x}^{(i)}$是LR图像，其对应的ground-truth HR图像为$\tilde{\mathrm{y}}^{(i)}$，$\tilde{\mathrm{p}}^{(i)}$是对应的ground-truth先验信息。FSRNet的损失函数如下：</p>
 <p>$$\mathcal{L}_{\mathrm{F}}(\Theta)=\frac{1}{2N}\sum_{i=1}^{N}\{||\tilde{\mathrm{y}}^{(i)}-\mathrm{y}_{c}^{(i)}||^2+\alpha||\tilde{\mathrm{y}}^{(i)}-\mathrm{y}^{(i)}||^2+\beta||\tilde{\mathrm{p}}^{(i)}-\mathrm{p}^{(i)}||^2\}$$</p>
 <p>其中$\Theta$是参数集，$\alpha$和$\beta$是两个参数，分别代表括号中第二项“粗糙超分辨率损失”以及第三项“先验损失”的权重，$\mathrm{y}^{(i)}和\mathrm{p}^{(i)}$分别是第$i$张图片的超分辨率结果和估测出的先验信息。</p>
 <center><img src="/images/45.png" alt=""></center>
+
+<p><span id="7">- <strong>FSRGAN</strong></span></p>
+<p>主要思想是用判别网络区分超分辨率图像和真实的高分辨率图像，以此训练超分辨率网络来“欺骗”判别器。</p>
+<p>对抗网络$\mathrm{C}$的目标函数：</p>
+<p>$$\mathcal{L}_{\mathrm{C}}(\mathrm{F},\mathrm{C})=\mathbb{E}\left[log\mathrm{C}(\tilde{\mathrm{y}},\mathrm{x})\right]+\mathbb{E}\left[log(1-\mathrm{C}(\mathrm{F}(\mathrm{x}),\mathrm{x}))\right]$$</p>
+<p>$\mathrm{C}$输出的是输入图片为真实图片的概率，$\mathbb{E}$是概率分布的期望。此外，还有一种使用预训练VGG-16网络中高层feature map(‘relu5_3’层的特征)的Perceptual Loss，可以帮助评估与感知有关的特征，函数如下：</p>
+<p>$$\mathcal{L}_{\mathrm{P}}=||\phi(\mathrm{y})-\phi(\mathrm{\tilde{y}})||^2$$</p>
+<p>其中$\phi$指固定的预训练VGG模型，将图片$\mathrm{y}/\mathrm{\tilde{y}}$映射到特征空间中。这样，我们得到了FSRGAN的最终目标函数：</p>
+<p>$$\text{arg}\min\limits_{\mathrm{F}}\max\limits_{\mathrm{C}}\mathcal{L}_{\mathrm{F}}(\Theta)+\gamma_{\mathrm{C}}\mathcal{L}_{\mathrm{C}}(\mathrm{F},\mathrm{C})+\gamma_{\mathrm{P}}\mathcal{L}_{\mathrm{P}}$$</p>
+<p>其中$\gamma_{\mathrm{C}}$和$\gamma_{\mathrm{P}}$分别代表GAN和Perceptual Loss的权重。</p>
+
             <div class="clearfix"></div>
             <hr class="nogutter">
         </div>
