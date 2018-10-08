@@ -267,37 +267,50 @@
         </div>
         <div class="col-md-8 col-md-offset-2">
       		<p>占坑。<a id="more"></a></p>
+<hr>
 <h2 id="1-Photo-Realistic-Single-Image-Super-Resolution-Using-a-Generative-Adversarial-Network"><a href="#1-Photo-Realistic-Single-Image-Super-Resolution-Using-a-Generative-Adversarial-Network" class="headerlink" title="[1] Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network"></a><a href="https://arxiv.org/pdf/1609.04802.pdf" target="_blank" rel="external">[1] Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network</a></h2><h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>如何更好地恢复图像的纹理细节。这是CNN方法没有解决的。</p>
 <h3 id="目前方法"><a href="#目前方法" class="headerlink" title="目前方法"></a>目前方法</h3><p>最优化目标函数作为监督，以均方差(MSE)作为目标函数进行优化，减小均方差，增大信噪比(PSNR)。但是MSE和PSNR值的高低并不能很好的表示视觉效果的好坏。</p>
-<h3 id="SRGAN"><a href="#SRGAN" class="headerlink" title="SRGAN"></a>SRGAN</h3><p>由adversarial loss和content loss组成的perceputal loss function。 其中adversarial loss由判别器生成，使我们生成的图像更加接近自然图像；content loss由图像的视觉相似性生成，而不是像素空间的相似性。采用mean-opinion-score(MOS)测试作为图像效果的评判，最后的测试结果表明采用SRGAN获得的图像的MOS值比采用其他顶级的方法获得的图像的MOS值更加接近原始的高分辨图像。</p>
-<h3 id="GAN的生成器"><a href="#GAN的生成器" class="headerlink" title="GAN的生成器"></a>GAN的生成器</h3><p>深度残差网络(ResNet)，优化目标除了MSE，还有一种由VGG网络和判别器构成的新型perceptual loss。其中判别器可以使结果更接近用作ground truth的高分辨率图像。VGG网络在其他论文中提出，作者用VGG网络特征图谱的损失函数取代了以MSE为基础的content loss。</p>
+<h3 id="SRGAN"><a href="#SRGAN" class="headerlink" title="SRGAN"></a>SRGAN</h3><p>由Adversarial Loss和Content Loss组成的Perceputal Loss Function。 其中Adversarial Loss由判别器生成，使我们生成的图像更加接近自然图像；Content Loss由图像的视觉相似性生成，而不是像素空间的相似性。采用Mean-Opinion-Score(MOS)测试作为图像效果的评判，最后的测试结果表明采用SRGAN获得的图像的MOS值比采用其他顶级的方法获得的图像的MOS值更加接近原始的高分辨图像。</p>
+<h3 id="GAN的生成器"><a href="#GAN的生成器" class="headerlink" title="GAN的生成器"></a>GAN的生成器</h3><p>深度残差网络(ResNet)，优化目标除了MSE，还有一种由VGG网络和判别器构成的新型Perceptual Loss。其中判别器可以使结果更接近用作ground-truth的高分辨率图像。VGG网络在其他论文中提出，作者用VGG网络特征图谱的损失函数取代了以MSE为基础的Content Loss。</p>
 <h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p>训练一个以$\theta_G$为参数的前馈神经网络，$\theta_G$代表$L$层深度网络的weights和biases。训练方程：</p>
-<center><img src="/images/45.png" alt=""></center>
-
-<p>$l^{SR}$表示perceptual loss。</p>
+<p>$$\hat{\theta_G}=\text{arg}\min\limits_{\theta_G} \frac{1}{N}\sum_{n=1}^N l^{SR}(G_{\theta_G}(I_n^{LR}),I_n^{HR})$$</p>
+<p>$l^{SR}$表示Perceptual Loss。</p>
 <p>判别器$D_{\theta_G}$，生成器和判别器交替优化下式：</p>
-<center><img src="/images/46.png" alt=""></center>
-
+<p>$$\min\limits_{\theta_G}\max\limits_{\theta_D}\mathbb{E}_{I^{HR}\sim p_{\text{train}}\left(I^{HR}\right)}\left[logD_{\theta_D}\left(I^{HR}\right)\right]+\mathbb{E}_{I^{LR}\sim p_{G}\left(I^{LR}\right)}\left[log\left(1-D_{\theta_D}\left(G_{\theta_G}\left(I^{LR}\right)\right)\right)\right]$$</p>
 <p>网络结构：</p>
 <center><img src="/images/47.png" alt=""></center>
 
-<p>新型Perceptual loss function (<a href="#1">Content Loss</a> + <a href="#2">adversarial loss</a>)：</p>
-<center><img src="/images/48.png" alt=""></center>
-
-<p><span id="1">- Content Loss</span></p>
-<p>以前用MSE作损失函数的content loss与新的以预训练19层VGG网络ReLU激活层为基础的VGG loss：</p>
-<center><img src="/images/49.png" alt=""></center><br><center><img src="/images/50.png" alt=""></center>
-
-<p>其中$\phi_{i,j}$表示VGG19网络当中第$i$层maxpooling层后的第$j$个卷积层得到的特征图谱。 </p>
+<p>新型Perceptual Loss Function (<a href="#1">Content Loss</a> + <a href="#2">Adversarial Loss</a>)：</p>
+<p>$$l^{SR} = \underbrace{ \underbrace{l_{X}^{SR}}_{\text{Content Loss}} + \underbrace{10^{-3}l_{\text{Gen}}^{SR}}_{\text{Adversarial Loss}} }_{\text{Perceptual Loss (for VGG based content losses)}}$$</p>
+<p><span id="1">- <strong>Content Loss</strong></span></p>
+<p>以前用MSE作损失函数的Content Loss与新的以预训练19层VGG网络ReLU激活层为基础的VGG Loss：</p>
+<p>$$l^{SR}_{MSE}=\frac{1}{r^2WH}\sum_{x=1}^{rW}\sum_{y=1}^{rH}\left(I^{HR}_{x,y} - G_{\theta_G}\left(I^{LR}\right)_{x,y}\right)^2$$</p>
+<p>$$l^{SR}_{VGG/i,j}=\frac{1}{W_{i,j}H_{i,j}}\sum_{x=1}^{W_{i,j}}\sum_{y=1}^{H_{i,j}}\left(\phi_{i,j}\left(I^{HR}\right)_{x,y}-\phi_{i,j}\left(G_{\theta_G}\left(I^{LR}\right)\right)_{x,y}\right)^2$$</p>
+<p>其中$\phi_{i,j}$表示VGG19网络当中第$i$层max pooling层后的第$j$个卷积层得到的特征图谱。 </p>
 <p>$W_{i,j}$和$H_{i,j}$分别表示VGG网络中特征图谱的维度。</p>
-<p><span id="2">- Adversarial Loss</span></p>
+<p><span id="2">- <strong>Adversarial Loss</strong></span></p>
 <p>通过“欺骗”判别器从而偏向生成输出更接近自然图像的输出。 </p>
-<center><img src="/images/51.png" alt=""></center>
-
+<p>$$l_{Gen}^{SR}=\sum_{n=1}^{N}-logD_{\theta_D}(G_{\theta_G}(I^{LR}))$$</p>
 <p>其中$D_{\theta_D}(G_{\theta_G}(I^{LR}))$表示的是判别器将生成器生成的图像判定为自然图像的概率。</p>
-<h2 id="2-FSRNet-End-to-End-Learning-Face-Super-Resolution-with-Facial-Priors"><a href="#2-FSRNet-End-to-End-Learning-Face-Super-Resolution-with-Facial-Priors" class="headerlink" title="[2] FSRNet: End-to-End Learning Face Super-Resolution with Facial Priors"></a><a href="https://arxiv.org/pdf/1711.10703.pdf" target="_blank" rel="external">[2] FSRNet: End-to-End Learning Face Super-Resolution with Facial Priors</a></h2><h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>首先是一个粗糙的SR network，生成一个粗糙的HR图像。然后将粗糙HR图像分别输入到两个分支：精密SR编码器和先验信息估测网络。前者抓取图像的特征，后者对人脸的landmark和heatmap等信息做出估计。得到的图像特征和先验信息都被输入到精密SR解码器中来还原HR图像。FSRNet还加入了FSRGAN得到的adversarial loss，有助于生成更真实的人脸图像。</p>
+<hr>
+<h2 id="2-FSRNet-End-to-End-Learning-Face-Super-Resolution-with-Facial-Priors"><a href="#2-FSRNet-End-to-End-Learning-Face-Super-Resolution-with-Facial-Priors" class="headerlink" title="[2] FSRNet: End-to-End Learning Face Super-Resolution with Facial Priors"></a><a href="https://arxiv.org/pdf/1711.10703.pdf" target="_blank" rel="external">[2] FSRNet: End-to-End Learning Face Super-Resolution with Facial Priors</a></h2><h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>首先是一个<a href="#4" title="Coarse SR Network">粗糙超分辨率网络</a>，生成一个粗糙的HR图像。然后将粗糙HR图像分别输入到两个分支：<a href="#5" title="Fine SR Encoder">精密超分辨率编码器</a>和<a href="#5" title="Prior Estimation Network">先验信息估测网络</a>。前者抓取图像的特征，后者对人脸的landmark和heatmap等信息做出估计。得到的图像特征和先验信息都被输入到<a href="#6" title="Fine SR Decoder">精密超分辨率解码器</a>中来还原HR图像。粗糙超分辨率网络后面的三个部分统称为精密超分辨率网络。FSRNet还加入了FSRGAN得到的Adversarial Loss，有助于生成更真实的人脸图像。</p>
 <p><span id="3">两个有关的任务：<a href="#3" title="Face Alignment">人脸对齐</a>和<a href="#3" title="Face Parsing">人脸解析</a>。这是两个人脸超分辨率的新型评价指标，与传统的通过视觉感知来评价不同。</span></p>
-
+<p><span id="4">- <strong>Coarse SR Network</strong></span></p>
+<p>从原图像$\mathrm{x}$恢复一个粗糙的超分辨率图像$\mathrm{y}_c$，避免输入图像太过模糊无法进行先验估测。</p>
+<p>$$\mathrm{y}_c=\mathcal{C}(\mathrm{x})$$</p>
+<p>细节：一个3×3的卷积层→3个残差块→另一个3×3的卷积层。</p>
+<p><span id="5">- <strong>Prior Estimation Network &amp; Fine SR Encoder</strong></span></p>
+<p>$$\mathrm{p}=\mathcal{P}(\mathrm{y}_c),\mathrm{f}=\mathcal{F}(\mathrm{y}_c)$$</p>
+<p>其中$\mathrm{f}$是编码器抽取出的特征，$\mathrm{p}$是估测网络得到的先验信息。</p>
+<p>任何真实物体的形状和纹理都有不同的分布，但我们选择刻画人脸的形状先验。原因有两点：1.在降低分辨率时形状会比纹理更好地保留，因此做超分辨率时也更容易取出；2.形状先验要比纹理先验更容易表示，对于人脸，人脸解析可以找出面部各部分的划分，landmark可以给出面部关键点精确的定位，这些都代表形状信息。而纹理信息就不好表示。</p>
+<p><span id="6">- <strong>Fine SR Decoder</strong></span></p>
+<p>$$\mathrm{y}=\mathcal{D}(\mathrm{f},\mathrm{p})$$</p>
+<p>$\mathrm{y}$就是最终得到的超分辨率结果图片。</p>
+<p><span>- <strong>Loss Function</strong></span></p>
+<p>给定$N$个样本的训练集$\{\mathrm{x}^{(i)},\tilde{\mathrm{y}}^{(i)},\tilde{\mathrm{p}}^{(i)}\}_{i=1}^{N}$，其中$\mathrm{x}^{(i)}$是LR图像，其对应的ground-truth HR图像为$\tilde{\mathrm{y}}^{(i)}$，$\tilde{\mathrm{p}}^{(i)}$是对应的ground-truth先验信息。FSRNet的损失函数如下：</p>
+<p>$$\mathcal{L}_{\mathrm{F}}(\Theta)=\frac{1}{2N}\sum_{i=1}^{N}\{||\tilde{\mathrm{y}}^{(i)}-\mathrm{y}_{c}^{(i)}||^2+\alpha||\tilde{\mathrm{y}}^{(i)}-\mathrm{y}^{(i)}||^2+\beta||\tilde{\mathrm{p}}^{(i)}-\mathrm{p}^{(i)}||^2\}$$</p>
+<p>其中$\Theta$是参数集，$\alpha$和$\beta$是两个参数，分别代表括号中第二项“粗糙超分辨率损失”以及第三项“先验损失”的权重，$\mathrm{y}^{(i)}和\mathrm{p}^{(i)}$分别是第$i$张图片的超分辨率结果和估测出的先验信息。</p>
+<center><img src="/images/45.png" alt=""></center>
             <div class="clearfix"></div>
             <hr class="nogutter">
         </div>
