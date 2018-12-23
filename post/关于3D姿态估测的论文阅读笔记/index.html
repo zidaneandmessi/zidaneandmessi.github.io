@@ -17,7 +17,7 @@
 <!--<![endif]-->
 
 <head>
-  <title>标签: Manacher | 魔法炮</title>
+  <title>关于3D姿态估测的论文阅读笔记 | 魔法炮</title>
   <!-- Meta data -->
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -83,7 +83,7 @@
 </head>
 
 <!--
-<body class="home-template">
+<body class="post-template">
 -->
 <body id="index" class="lightnav animsition">
 
@@ -243,37 +243,89 @@
 
         <!-- ============================ END Hero Image =========================== -->
       
-
-
-<section id="services">
+<section id="intro">
     <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="row boxes">
-                    
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/post/模板复习计划/">模板复习计划</a></h4>
-                            
-                            <p><time datetime="2016-06-09T12:45:29.000Z"><a href="/post/模板复习计划/">2016-06-09</a></time></p>
-                        </div>
-                    
-                </div>
-            </div>    
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2018-12-23T06:34:04.000Z" itemprop="datePublished">
+          2018-12-23
+      </time>
+    
+    
+    
+    | 
+    <a href='/categories/Lab/'>Lab</a>
+    
+    
+    
+    
+    
+</span>
+                <h1>关于3D姿态估测的论文阅读笔记</h1>
+            </div>
         </div>
-    </div>
-</section> 
+        <div class="col-md-8 col-md-offset-2">
+      		<p>粗略阅读，信手胡写。<a id="more"></a></p>
+<h2 id="1-ECCV2016-Towards-Viewpoint-Invariant-3D-Human-Pose-Estimation"><a href="#1-ECCV2016-Towards-Viewpoint-Invariant-3D-Human-Pose-Estimation" class="headerlink" title="[1] [ECCV2016] Towards Viewpoint Invariant 3D Human Pose Estimation"></a><a href="https://arxiv.org/pdf/1603.07076.pdf" target="_blank" rel="external">[1] [ECCV2016] Towards Viewpoint Invariant 3D Human Pose Estimation</a></h2><center><img src="/images/48.png" alt=""></center>
 
-<section id="statement">
-    <div class="container text-center wow fadeInUp" data-wow-delay="0.5s">
-        <div class="row">
-            <b>最清晰的脚印，印在最泥泞的路上。</b>
+<p>每个时间节点为一个阶段，每个阶段输入上一阶段的估测结果$\hat{y}_{t-1}$以及对原图处理产生的一个glimpse图像$X_t$。</p>
+<p><span>- <strong>Local Input Representation</strong></span></p>
+<p>即将输入图片转化成glimpse图像。</p>
+<p>Glimpse: $X\in \mathbb{R}^{H\times W\times J}$, 其中$H$和$W$表示glimpse图像的大小，$J$是关节点的数目。论文里将glimpse图像比喻成视网膜，它是一种中心较清晰，边缘较模糊的图像编码方式。这让中心的特征可以被focus，同时能够保留<em>部分</em>空间信息。</p>
+<p>第一步：从输入的<em>深度图像</em>中围绕每个预测的身体部位抽取一系列patch。第二步：将这些patch转化为glimpse。</p>
+<p><span>- <strong>Learned Viewpoint Invariant Embedding</strong></span></p>
+<center><img src="/images/49.png" alt=""></center>
+
+<p>将glimpse图像投射到一个预训练的固定视角的特征空间。</p>
+<p>首先把每一个glimpse图像$x\in H\times W$转化为三维像素(体素)$x’\in H\times W\times D$，其中$D$是体素的深度。体素只表示深度图，并不能表示一个完整的3D模型。我们还要将其映射到固定视角的特征空间来产生最终的3D模型。</p>
+<p>这个映射的过程就是<strong>空间变换网络</strong>(Spatial Transformer Networks)的过程。分为两步。第一步：用一个<strong>定位网络</strong>(localization network)$f(\cdot)$来估测一个3D变换的参数$\theta$。第二步：计算一个<strong>采样网格</strong>(sampling grid)$G\in \mathbb{R}^{H\times W\times D}$。最终得到feature map：</p>
+<p>$$V_{ijk}=\sum_{a=1}^{H}\sum_{b=1}^{W}\sum_{c=1}^{D}x’_{abc}\mathrm{ker}\left(\frac{a-x_{ijk}^{(G)}}{H}\right)\mathrm{ker}\left(\frac{b-y_{ijk}^{(G)}}{W}\right)\mathrm{ker}\left(\frac{c-z_{ijk}^{(G)}}{D}\right)$$</p>
+<p>其中$\mathrm{ker}(\cdot)=\mathrm{max}(0,1-|\cdot|)$，表示三线性采样核。最后将固定视角的3D feature map $V \in \mathbb{R}^{H \times W \times D}$ 映射到固定视角的2D feature map $U\in \mathbb{R}^{H \times W}$：</p>
+<p>$$U_{ij}=\sum_{c=1}^DV_{ijc}$$</p>
+<p>$V$是对glimpse的3D特征表达，$U$是$V$映射回二维空间的embedding结果。</p>
+<p><span>- <strong>Convolutional and Recurrent Networks</strong></span></p>
+<p>CNN+RNN。</p>
+
+            <div class="clearfix"></div>
+            <hr class="nogutter">
         </div>
+        <nav class="pagination" role="pagination">
+    
+    
+    <a class="pull-right" href="/post/关于超分辨率的论文阅读笔记/">
+        关于超分辨率的论文阅读笔记 →
+    </a>
+    
+</nav>
+
+        <div class="duoshuo">
+<div class="ds-thread" data-thread-key="post/关于3D姿态估测的论文阅读笔记/" data-title="关于3D姿态估测的论文阅读笔记" data-url="http://zidaneandmessi.github.io/post/关于3D姿态估测的论文阅读笔记/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"zidaneandmessi"};
+(function() {
+	var ds = document.createElement('script');
+	ds.type = 'text/javascript';ds.async = true;
+	ds.src = '//zidaneandmessi.github.io/embed.txt';
+	ds.charset = 'UTF-8';
+	(document.getElementsByTagName('head')[0] 
+	 || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+
+<!--PC��-->
+<div id="SOHUCS" sid="post/关于3D姿态估测的论文阅读笔记/" data-title="关于3D姿态估测的论文阅读笔记"></div>
+<script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
+<script type="text/javascript">
+window.changyan.api.config({
+appid: 'cyt80Hd7O',
+conf: 'prod_89e85e3705f1e755a6b5553e14689c10'
+});
+</script></div>
     </div>
 </section>
+
+
       
 <!-- ============================ Footer =========================== -->
 
