@@ -285,7 +285,7 @@
 <p>$$U_{ij}=\sum_{c=1}^DV_{ijc}$$</p>
 <p>$V$是对glimpse的3D特征表达，$U$是$V$映射回二维空间的embedding结果。</p>
 <p><span>- <strong>Convolutional and Recurrent Networks</strong></span></p>
-<p>CNN+RNN。</p>
+<p>所有得到的$U$组成了一个$H\times W\times J$的向量。但是直接回归人体部位的位置由于高度非线性映射的问题很难实现，所以采用了一个逐步修正估测结果的方法。为了让时序信息表示更加直接，关联性更强，用LSTM模型连接相邻两步。</p>
 
             <div class="clearfix"></div>
             <hr class="nogutter">
