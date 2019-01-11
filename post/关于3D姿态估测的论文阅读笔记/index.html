@@ -286,6 +286,30 @@
 <p>$V$是对glimpse的3D特征表达，$U$是$V$映射回二维空间的embedding结果。</p>
 <p><span>- <strong>Convolutional and Recurrent Networks</strong></span></p>
 <p>所有得到的$U$组成了一个$H\times W\times J$的向量。但是直接回归人体部位的位置由于高度非线性映射的问题很难实现，所以采用了一个逐步修正估测结果的方法。为了让时序信息表示更加直接，关联性更强，用LSTM模型连接相邻两步。</p>
+<h2 id="2-ECCV2018-BodyNet-Volumetric-Inference-of-3D-Human-Body-Shapes"><a href="#2-ECCV2018-BodyNet-Volumetric-Inference-of-3D-Human-Body-Shapes" class="headerlink" title="[2] [ECCV2018] BodyNet: Volumetric Inference of 3D Human Body Shapes"></a><a href="https://arxiv.org/pdf/1804.04875.pdf" target="_blank" rel="external">[2] [ECCV2018] BodyNet: Volumetric Inference of 3D Human Body Shapes</a></h2><center><img src="/images/50.png" alt=""></center>
+
+<p>包含独立训练的四个子网络，分别用来生成2D姿态、2D分割, 3D姿态, 3D形状。</p>
+<p>这篇论文使用了四种loss function：<a href="#1">3D体积测量loss$\mathcal{L}_v$</a> 、<a href="#2">再投影loss$\mathcal{L}_p$</a>、 <a href="#3">姿态loss$\mathcal{L}_j$</a>、<a href="#3">分割loss$\mathcal{L}_s$</a>。</p>
+<p><span id="1">- <strong>Volumetric Inference for 3D Human Shape</strong></span></p>
+<p>使用“体素表示法”，估测3D形状的子网络输出一个体素网格上的占用图，代表每个网格是否被填满(实际上是一个$0$和$1$之间的实数，代表占用概率)。首先要调整图片的位置和大小，使网格的中心也就是$z$轴的位置大致在人体的髋关节附近，大小根据2D分割的结果来调整。</p>
+<p>$V$表示要训练的网络占用图经过sigmoid激活后的值，$\hat{V}$是它的ground truth，$\mathcal{L}_v$定义为二者之间的交叉熵：</p>
+<p>$$\mathcal{L}_v=\sum_{x=1}^W\sum_{y=1}^H\sum_{z=1}^DV_{xyz}\mathrm{log}\hat{V}_{xyz}+(1-V_{xyz})\mathrm{log}(1-\hat{V}_{xyz})$$</p>
+<p><span id="2">- <strong>Multi-view Re-projection Loss On the Silhouette</strong></span></p>
+<center><img src="/images/51.png" alt=""></center>
+
+<p>四肢的confidence较低，因此采用2D再投影loss，增加边界体素的重要性。定义正投射(Front View Projection)和侧投射(Side View Projection)，即分别取$z$轴和$x$轴的最大值：</p>
+<p>$$\hat{S}^{FV}(x,y)=\max\limits_{z}\hat{V}_{xyz}$$</p>
+<p>$$\hat{S}^{SV}(y,z)=\max\limits_{x}\hat{V}_{xyz}$$</p>
+<p>$S^{FV}$和$S^{SV}$同理。$\mathcal{L}_p$依然定义为交叉熵：</p>
+<p>$$\mathcal{L}_p^{FV}=\sum_{x=1}^W\sum_{y=1}^HS(x,y)\mathrm{log}\hat{S}^{FV}(x,y)+(1-S(x,y))\mathrm{log}(1-\hat{S}^{FV}(x,y))$$</p>
+<p>$$\mathcal{L}_p^{SV}=\sum_{y=1}^H\sum_{z=1}^DS(y,z)\mathrm{log}\hat{S}^{SV}(y,z)+(1-S(y,z))\mathrm{log}(1-\hat{S}^{SV}(y,z))$$</p>
+<p><span id="3">- <strong>Multi-task Learning with Intermediate Supervision</strong></span></p>
+<p><strong>2D姿态loss</strong>：用沙漏网络的前两层将$3\times256\times256$的RGB图像映射到$16\times64\times64$的2D关节热度图，其中$16$为关节数。这$16$张热度图是以每个关节为中心的高斯分布，放在一起取最大值就得到最终的2D关节定位热度图。$\mathcal{L}_{j}^{2D}$定义为关节定位热度图和ground truth之间的均方差。</p>
+<p><strong>2D分割loss</strong>：依然是用沙漏网络的前两层，将$3\times256\times256$的RGB图像映射到$15\times64\times64$的热度图，其中$15$为人体部位数。训练集基于一个叫做Skinned<br>Multi-person Linear Model (SMPL)的模型。$\mathcal{L}_{s}$定义为人体部位定位热度图和ground truth之间的交叉熵。</p>
+<p><strong>3D姿态loss</strong>：将2D热度图延伸到3D，在体素网格上用3D的高斯分布表示3D关节定位。其中$xy$平面上就是2D的关节热度图，$z$轴上的值代表深度。实验表明，深度范围是一个大约85cm的区间，最多占用$19$位。所以最终的3D关节定位热度图大小为$64\times64\times19$。同样$\mathcal{L}_{j}^{3D}$定义为关节定位热度图和ground truth之间的均方差。</p>
+<p>最后总的loss为：</p>
+<p>$$\mathcal{L}=\lambda_{j}^{2D}\mathcal{L}_{j}^{2D}+\lambda_{s}\mathcal{L}_{s}+\lambda_{j}^{3D}\mathcal{L}_{j}^{3D}+\lambda_{v}\mathcal{L}_{v}+\lambda_{p}^{FV}\mathcal{L}_{p}^{FV}+\lambda_{p}^{SV}\mathcal{L}_{p}^{SV}$$</p>
+<p>规定这些系数的比例$(\lambda_{j}^{2D},\lambda_{s},\lambda_{j}^{3D},\lambda_{v},\lambda_{p}^{FV},\lambda_{p}^{SV})\propto (10^7,10^3,10^6,10^1,1,1)$，让每个loss的平均梯度在微调开始时处于同一尺度。同时参数的和保持为$1$。</p>
 
             <div class="clearfix"></div>
             <hr class="nogutter">
