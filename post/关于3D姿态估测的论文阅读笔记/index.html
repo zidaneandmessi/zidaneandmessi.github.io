@@ -279,7 +279,7 @@
 
 <p>将glimpse图像投射到一个预训练的固定视角的特征空间。</p>
 <p>首先把每一个glimpse图像$x\in H\times W$转化为三维像素(体素)$x’\in H\times W\times D$，其中$D$是体素的深度。体素只表示深度图，并不能表示一个完整的3D模型。我们还要将其映射到固定视角的特征空间来产生最终的3D模型。</p>
-<p>这个映射的过程就是<strong>空间变换网络</strong>(Spatial Transformer Networks)的过程。分为两步。第一步：用一个<strong>定位网络</strong>(localization network)$f(\cdot)$来估测一个3D变换的参数$\theta$。第二步：计算一个<strong>采样网格</strong>(sampling grid)$G\in \mathbb{R}^{H\times W\times D}$。最终得到feature map：</p>
+<p>这个映射的过程就是<strong>空间变换网络</strong>(Spatial Transformer Networks)的过程。分为两步。第一步：用一个<strong>定位网络</strong>(localization network)$f(\cdot)$来估测一个3D变换的参数$\theta$。第二步：计算一个<strong>采样网格</strong>(sampling grid) $G\in \mathbb{R}^{H\times W\times D}$。最终得到feature map：</p>
 <p>$$V_{ijk}=\sum_{a=1}^{H}\sum_{b=1}^{W}\sum_{c=1}^{D}x’_{abc}\mathrm{ker}\left(\frac{a-x_{ijk}^{(G)}}{H}\right)\mathrm{ker}\left(\frac{b-y_{ijk}^{(G)}}{W}\right)\mathrm{ker}\left(\frac{c-z_{ijk}^{(G)}}{D}\right)$$</p>
 <p>其中$\mathrm{ker}(\cdot)=\mathrm{max}(0,1-|\cdot|)$，表示三线性采样核。最后将固定视角的3D feature map $V \in \mathbb{R}^{H \times W \times D}$ 映射到固定视角的2D feature map $U\in \mathbb{R}^{H \times W}$：</p>
 <p>$$U_{ij}=\sum_{c=1}^DV_{ijc}$$</p>
@@ -291,9 +291,10 @@
 <p>包含独立训练的四个子网络，分别用来生成2D姿态、2D分割, 3D姿态, 3D形状。</p>
 <p>这篇论文使用了四种loss function：<a href="#1">3D体积测量loss$\mathcal{L}_v$</a> 、<a href="#2">再投影loss$\mathcal{L}_p$</a>、 <a href="#3">姿态loss$\mathcal{L}_j$</a>、<a href="#3">分割loss$\mathcal{L}_s$</a>。</p>
 <p><span id="1">- <strong>Volumetric Inference for 3D Human Shape</strong></span></p>
-<p>使用“体素表示法”，估测3D形状的子网络输出一个体素网格上的占用图，代表每个网格是否被填满(实际上是一个$0$和$1$之间的实数，代表占用概率)。首先要调整图片的位置和大小，使网格的中心也就是$z$轴的位置大致在人体的髋关节附近，大小根据2D分割的结果来调整。</p>
+<p>使用“体素表示法”，估测3D形状的子网络输出一个体素网格上的占用图，代表每个网格是否被填满。首先要调整图片的位置和大小，使网格的中心也就是$z$轴的位置大致在人体的髋关节附近，大小根据2D分割的结果来调整。</p>
 <p>$V$表示要训练的网络占用图经过sigmoid激活后的值，$\hat{V}$是它的ground truth，$\mathcal{L}_v$定义为二者之间的交叉熵：</p>
 <p>$$\mathcal{L}_v=\sum_{x=1}^W\sum_{y=1}^H\sum_{z=1}^DV_{xyz}\mathrm{log}\hat{V}_{xyz}+(1-V_{xyz})\mathrm{log}(1-\hat{V}_{xyz})$$</p>
+<p>占用图是二分类问题，可以推广至多分类问题，比如七分类(头、躯干、左腿、右腿、左臂、右臂、背景)就可以做人体3D分割。</p>
 <p><span id="2">- <strong>Multi-view Re-projection Loss On the Silhouette</strong></span></p>
 <center><img src="/images/51.png" alt=""></center>
 
@@ -305,7 +306,7 @@
 <p>$$\mathcal{L}_p^{SV}=\sum_{y=1}^H\sum_{z=1}^DS(y,z)\mathrm{log}\hat{S}^{SV}(y,z)+(1-S(y,z))\mathrm{log}(1-\hat{S}^{SV}(y,z))$$</p>
 <p><span id="3">- <strong>Multi-task Learning with Intermediate Supervision</strong></span></p>
 <p><strong>2D姿态loss</strong>：用沙漏网络的前两层将$3\times256\times256$的RGB图像映射到$16\times64\times64$的2D关节热度图，其中$16$为关节数。这$16$张热度图是以每个关节为中心的高斯分布，放在一起取最大值就得到最终的2D关节定位热度图。$\mathcal{L}_{j}^{2D}$定义为关节定位热度图和ground truth之间的均方差。</p>
-<p><strong>2D分割loss</strong>：依然是用沙漏网络的前两层，将$3\times256\times256$的RGB图像映射到$15\times64\times64$的热度图，其中$15$为人体部位数。训练集基于一个叫做Skinned<br>Multi-person Linear Model (SMPL)的模型。$\mathcal{L}_{s}$定义为人体部位定位热度图和ground truth之间的交叉熵。</p>
+<p><strong>2D分割loss</strong>：依然是用沙漏网络的前两层，将$3\times256\times256$的RGB图像映射到$15\times64\times64$的热度图，其中$15$为人体部位数。训练集基于一个叫做Skinned Multi-person Linear Model (SMPL)的模型。$\mathcal{L}_{s}$定义为人体部位定位热度图和ground truth之间的交叉熵。</p>
 <p><strong>3D姿态loss</strong>：将2D热度图延伸到3D，在体素网格上用3D的高斯分布表示3D关节定位。其中$xy$平面上就是2D的关节热度图，$z$轴上的值代表深度。实验表明，深度范围是一个大约85cm的区间，最多占用$19$位。所以最终的3D关节定位热度图大小为$64\times64\times19$。同样$\mathcal{L}_{j}^{3D}$定义为关节定位热度图和ground truth之间的均方差。</p>
 <p>最后总的loss为：</p>
 <p>$$\mathcal{L}=\lambda_{j}^{2D}\mathcal{L}_{j}^{2D}+\lambda_{s}\mathcal{L}_{s}+\lambda_{j}^{3D}\mathcal{L}_{j}^{3D}+\lambda_{v}\mathcal{L}_{v}+\lambda_{p}^{FV}\mathcal{L}_{p}^{FV}+\lambda_{p}^{SV}\mathcal{L}_{p}^{SV}$$</p>
