@@ -17,7 +17,7 @@
 <!--<![endif]-->
 
 <head>
-  <title>标签: 可并堆 | 魔法炮</title>
+  <title>关于改进HRNet的论文阅读笔记 | 魔法炮</title>
   <!-- Meta data -->
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -83,7 +83,7 @@
 </head>
 
 <!--
-<body class="home-template">
+<body class="post-template">
 -->
 <body id="index" class="lightnav animsition">
 
@@ -245,37 +245,83 @@
 
         <!-- ============================ END Hero Image =========================== -->
       
-
-
-<section id="services">
+<section id="intro">
     <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="row boxes">
-                    
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/post/2016-2-22讲课/">2016.2.22讲课</a></h4>
-                            
-                            <p><time datetime="2016-02-21T14:16:45.000Z"><a href="/post/2016-2-22讲课/">2016-02-21</a></time></p>
-                        </div>
-                    
-                </div>
-            </div>    
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2019-03-03T09:26:54.000Z" itemprop="datePublished">
+          2019-03-03
+      </time>
+    
+    
+    
+    | 
+    <a href='/categories/Lab/'>Lab</a>
+    
+    
+    
+    
+    
+</span>
+                <h1>关于改进HRNet的论文阅读笔记</h1>
+            </div>
         </div>
-    </div>
-</section> 
+        <div class="col-md-8 col-md-offset-2">
+      		<p>HRNet中科大的论文，2D人体姿态检测。我们将尝试将其运用于目标检测和实例分割，与Mask RCNN结合。<a id="more"></a></p>
+<h2 id="Deep-High-Resolution-Representation-Learning-for-Human-Pose-Estimation"><a href="#Deep-High-Resolution-Representation-Learning-for-Human-Pose-Estimation" class="headerlink" title="Deep High-Resolution Representation Learning for Human Pose Estimation"></a><a href="https://arxiv.org/pdf/1902.09212.pdf" target="_blank" rel="external">Deep High-Resolution Representation Learning for Human Pose Estimation</a></h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>目前存在的姿态检测方法都是<strong>从高分辨率下采样至低分辨率，然后从低分辨率恢复至高分辨率</strong>。但HRNet保留了高分辨率网络，<strong>向高分辨率主网络逐渐并行加入低分辨率子网络</strong>，于是预测的关键点热度图就会更加准确。</p>
+<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><center><img src="/images/52.png" alt=""></center>
 
-<section id="statement">
-    <div class="container text-center wow fadeInUp" data-wow-delay="0.5s">
-        <div class="row">
-            <b>最清晰的脚印，印在最泥泞的路上。</b>
+<p>用$\mathcal{N}_{sr}$表示第$s$阶段(stage)，代表第$r$个分辨率尺度的子网络，传统的序列(线性)结构是这样的：</p>
+<p>\begin{equation}<br>\begin{array}<br>\mathcal{N}_{11}  &amp; \rightarrow ~~ \mathcal{N}_{22} &amp;\rightarrow ~~ \mathcal{N}_{33} &amp; \rightarrow ~~ \mathcal{N}_{44}<br>\end{array}<br>\end{equation}</p>
+<p>而本文采用的并列结构是这样的：</p>
+<p>\begin{equation}<br>\begin{array}<br>\mathcal{N}_{11}  &amp; \rightarrow ~~ \mathcal{N}_{21} &amp;\rightarrow ~~ \mathcal{N}_{31} &amp; \rightarrow ~~ \mathcal{N}_{41} \\<br>&amp; \searrow ~~ \mathcal{N}_{22} &amp;\rightarrow ~~ \mathcal{N}_{32} &amp; \rightarrow ~~ \mathcal{N}_{42} \\<br>&amp;   &amp;\searrow  ~~ \mathcal{N}_{33} &amp; \rightarrow ~~ \mathcal{N}_{43}  \\<br>&amp;   &amp; &amp; \searrow ~~ \mathcal{N}_{44}<br>\end{array}<br>\end{equation}</p>
+<p>横向深度增加，纵向尺度增加。每一个阶段(上面每一列)被分成了若干个<strong>交换块(exchange block)</strong>，在每个交换块中，一个<strong>交换单元(exchange unit)</strong>连接所有并列的卷积单元。下面是一个阶段中的结构示例：</p>
+<p>\begin{equation}<br>\begin{array}<br>\mathcal{C}^1_{31}  &amp; \searrow &amp;\nearrow ~~ \mathcal{C}^2_{31} &amp; \searrow  &amp;\nearrow ~~ \mathcal{C}^3_{31} &amp; \searrow \\<br>\mathcal{C}^1_{32}  &amp; \rightarrow ~~  \mathcal{E}^1_{3} &amp;  \rightarrow ~~ \mathcal{C}^2_{32} &amp; \rightarrow ~~  \mathcal{E}^2_{3} &amp;  \rightarrow ~~ \mathcal{C}^3_{32} &amp; \rightarrow ~~  \mathcal{E}^3_{3}\\<br>\mathcal{C}^1_{33}  &amp;  \nearrow &amp;\searrow ~~ \mathcal{C}^2_{33} &amp;  \nearrow &amp;\searrow ~~ \mathcal{C}^3_{33} &amp;  \nearrow\\<br>\end{array}<br>\end{equation}</p>
+<p>其中$\mathcal{E}^{b}_{s}$表示第$s$阶段(stage)的第$b$个交换块，$\mathcal{C}^{b}_{sr}$是其中代表第$r$个分辨率尺度的卷积单元。交换单元的工作原理如下图：</p>
+<center><img src="/images/53.png" alt=""></center>
+
+<p>上采样是$1\times 1$的最近邻点差值，下采样是<strong>若干个</strong>步长为$2$的$3\times 3$卷积层。</p>
+
+            <div class="clearfix"></div>
+            <hr class="nogutter">
         </div>
+        <nav class="pagination" role="pagination">
+    
+    
+    <a class="pull-right" href="/post/关于3D姿态估测的论文阅读笔记/">
+        关于3D姿态估测的论文阅读笔记 →
+    </a>
+    
+</nav>
+
+        <div class="duoshuo">
+<div class="ds-thread" data-thread-key="post/关于改进HRNet的论文阅读笔记/" data-title="关于改进HRNet的论文阅读笔记" data-url="http://zidaneandmessi.github.io/post/关于改进HRNet的论文阅读笔记/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"zidaneandmessi"};
+(function() {
+	var ds = document.createElement('script');
+	ds.type = 'text/javascript';ds.async = true;
+	ds.src = '//zidaneandmessi.github.io/embed.txt';
+	ds.charset = 'UTF-8';
+	(document.getElementsByTagName('head')[0] 
+	 || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+
+<!--PC��-->
+<div id="SOHUCS" sid="post/关于改进HRNet的论文阅读笔记/" data-title="关于改进HRNet的论文阅读笔记"></div>
+<script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
+<script type="text/javascript">
+window.changyan.api.config({
+appid: 'cyt80Hd7O',
+conf: 'prod_89e85e3705f1e755a6b5553e14689c10'
+});
+</script></div>
     </div>
 </section>
+
+
       
 <!-- ============================ Footer =========================== -->
 
