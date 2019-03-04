@@ -282,7 +282,7 @@
 <center><img src="/images/53.png" alt=""></center>
 
 <p>上采样是$1\times 1$的最近邻点差值，下采样是<strong>若干个</strong>步长为$2$的$3\times 3$卷积层。</p>
-<h2 id="Mask-R-CNN"><a href="#Mask-R-CNN" class="headerlink" title="Mask R-CNN"></a><a href="https://arxiv.org/pdf/1703.06870.pdf" target="_blank" rel="external">Mask R-CNN</a></h2><h3 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h3><p>实例分割。在图片中<strong>检测物体</strong>同时为每个检测出的实例<strong>生成一个segmentation mask</strong>。在Faster R-CNN的<strong>识别bounding box</strong>分支基础上增加了一个<strong>在每个关注区域(RoI)上预测segmentation mask</strong>的分支。这个新分支是一个小的全卷积网络，<strong>逐个像素</strong>地预测mask。</p>
+<h2 id="Mask-R-CNN"><a href="#Mask-R-CNN" class="headerlink" title="Mask R-CNN"></a><a href="https://arxiv.org/pdf/1703.06870.pdf" target="_blank" rel="external">Mask R-CNN</a></h2><h3 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h3><p>实例分割。在图片中<strong>检测物体</strong>同时为每个检测出的实例<strong>生成一个segmentation mask</strong>。在Faster R-CNN的<strong>识别bounding-box</strong>分支基础上增加了一个<strong>在每个关注区域(RoI)上预测segmentation mask</strong>的分支。这个新分支是一个小的全卷积网络，<strong>逐个像素</strong>地预测mask。</p>
 <center><img src="/images/54.png" alt=""></center>
 
 <ol>
@@ -291,11 +291,16 @@
 <li><p>Mask R-CNN<strong>将mask和分类预测解耦</strong>，即为每个分类单独预测一个二进制mask。每个分类之间没有竞争，而是依靠RoI的分类来判断每个像素属于哪个分类。</p>
 </li>
 </ol>
-<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>Faster R-CNN有两个输出：分类和bounding box，我们加入的新分支输出mask。但是mask与前两个不同，需要更精细的空间信息，所以我们采用<strong>逐像素对齐(pixel-to-pixel alignment)</strong>。</p>
-<p>Faster R-CNN的检测过程分为两个阶段：第一阶段是区域推荐网络(RPN)，推荐候选bounding box。第二阶段在每个候选box上用RoiPool来做分类和回归。Mask R-CNN也分为两个阶段：第一阶段同样是RPN。第二阶段除了分类和回归，还需要<strong>为每个RoI输出一个mask</strong>。</p>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>Faster R-CNN有两个输出：分类和bounding-box，我们加入的新分支输出mask。但是mask与前两个不同，需要更精细的空间信息，所以我们采用<strong>逐像素对齐(pixel-to-pixel alignment)</strong>。</p>
+<p>Faster R-CNN的检测过程分为两个阶段：第一阶段是区域推荐网络(RPN)，推荐候选bounding-box。第二阶段在每个候选box上用RoiPool来做分类和回归。Mask R-CNN也分为两个阶段：第一阶段同样是RPN。第二阶段除了分类和回归，还需要<strong>为每个RoI输出一个mask</strong>。</p>
 <h5 id="Mask-Representation"><a href="#Mask-Representation" class="headerlink" title="Mask Representation"></a>Mask Representation</h5><p>为每个PoI用<strong>全卷积网络</strong>预测一个$m\times m$的mask，卷积网络逐像素对应的特点可以更好地提取空间结构，不像之前的模型用<strong>全连接层</strong>来预测mask，结果会坍缩成短的向量。</p>
 <h5 id="RoIAlign"><a href="#RoIAlign" class="headerlink" title="RoIAlign"></a>RoIAlign</h5><p>RoIPool分割feature map时采用的是四舍五入取整，会带来误差。RoiAlign<strong>不进行取整</strong>，用<strong>双线性插值</strong>计算每个采样点处于的PoI区域四个格点上取值的和或均值。如下图所示。</p>
 <center><img src="/images/55.png" alt=""></center>
+
+<h5 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h5><p>网络包含两个部分：<strong>提取图像特征的卷积backbone网络</strong>和<strong>识别bounding-box的head网络</strong>。关于backbone网络，文章尝试了ResNet/ResNeXt-50/101-C4/FPN(Feature Pyramid Network)的多种组合。而head网络就是在Faster R-CNN结构的基础上加上mask分支，如下图。</p>
+<center><img src="/images/56.png" alt=""></center>
+
+<p>左边是用ResNet-C4做backbone的head网络，右边是用FPN做backbone的head网络。横向箭头是卷积，扩大map大小的箭头是反卷积。</p>
 
             <div class="clearfix"></div>
             <hr class="nogutter">
