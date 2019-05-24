@@ -326,6 +326,39 @@
 <p>其中$\phi$指固定的预训练VGG模型，将图片$\mathrm{y}/\mathrm{\tilde{y}}$映射到特征空间中。这样，我们得到了FSRGAN的最终目标函数：</p>
 <p>$$\text{arg}\min\limits_{\mathrm{F}}\max\limits_{\mathrm{C}}\mathcal{L}_{\mathrm{F}}(\Theta)+\gamma_{\mathrm{C}}\mathcal{L}_{\mathrm{C}}(\mathrm{F},\mathrm{C})+\gamma_{\mathrm{P}}\mathcal{L}_{\mathrm{P}}$$</p>
 <p>其中$\gamma_{\mathrm{C}}$和$\gamma_{\mathrm{P}}$分别代表GAN和Perceptual Loss的权重。</p>
+<h2 id="3-Real-Time-Single-Image-and-Video-Super-Resolution-Using-an-Efficient-Sub-Pixel-Convolutional-Neural-Network"><a href="#3-Real-Time-Single-Image-and-Video-Super-Resolution-Using-an-Efficient-Sub-Pixel-Convolutional-Neural-Network" class="headerlink" title="[[3] Real-Time Single Image and Video Super-Resolution Using an Efficient Sub-Pixel Convolutional Neural Network"></a>[[3] Real-Time Single Image and Video Super-Resolution Using an Efficient Sub-Pixel Convolutional Neural Network</h2><p>](<a href="https://arxiv.org/pdf/1609.05158v2.pdf" target="_blank" rel="external">https://arxiv.org/pdf/1609.05158v2.pdf</a>)</p>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>许多方法将多图片假设成同一场景的不同视角，可以看作多图像SR，利用显示冗余信息。而本文的方法是单图像SR(SISR)，利用隐式冗余信息。</p>
+<h3 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h3><p>流行的SISR方法可以分为基于边缘、基于图像统计、基于patch，以及基于稀疏度。基于稀疏度的方法是将图像编码成一些原子图片的组合，之后通过训练将LR和HR对应起来。但是这个方法的缺点是通过非线性重建来加入稀疏度限制需要花费很大计算量。</p>
+<p>这篇文章所用网络的结构如图所示。先提取LR图像的feature map，最后再进行上采样。前面是$l$层的CNN，最后一层是一个“亚像素卷积层(ESPCN)”，采用了$\frac{1}{r}$步长的卷积，每一步将$H\times W\times C$的输入图像转化为$H\times W\times C\cdot r^2$的特征图像，然后再按图中的方法重新排列(shuffle)成$rH\times rW \times C$。这个分数步长卷积在论文<a href="https://people.eecs.berkeley.edu/~jonlong/long_shelhamer_fcn.pdf" target="_blank" rel="external">Fully Convolutional Networks for Semantic Segmentation</a>中有介绍，具体的实现方法是双线性插值。</p>
+<center><img src="/images/62.png" alt=""></center>
+
+<h3 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h3><center><img src="/images/63.png" alt=""></center>
+
+
+<h2 id="4-Temporally-Coherent-GANs-for-Video-Super-Resolution-TecoGAN"><a href="#4-Temporally-Coherent-GANs-for-Video-Super-Resolution-TecoGAN" class="headerlink" title="[4] Temporally Coherent GANs for Video Super-Resolution (TecoGAN)"></a><a href="https://arxiv.org/pdf/1811.09393v2.pdf" target="_blank" rel="external">[4] Temporally Coherent GANs for Video Super-Resolution (TecoGAN)</a></h2><h3 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h3><p>在对抗训练进行视频超分辨率中，用向量范数作为损失函数可以带来时间流畅性和连贯性，但是会损失空间细节。本文介绍的方法能兼顾时间和空间。除了对抗学习所用的判别器以外，文中新引入了一个叫“Ping-Pong”的损失函数，在不影响视觉质量的前提下有效去除时间上的失真。本文提出了一系列衡量准确度以及视觉质量的方法。</p>
+<h3 id="方法-2"><a href="#方法-2" class="headerlink" title="方法"></a>方法</h3><p>模型包含三个部分：循环生成器$G$、流估测网络$F$、时空判别器$D$。流估测网络学习帧之间的运动补偿，同时帮助生成器和判别器。训练过程中，$G$和$F$同时训练来欺骗判别器$D$。</p>
+<p>循环生成器$G$和流估测网络$F$的结构如下图所示，$G$通过LR图像$x_t$生成HR图像$g_t$，并且循环使用上一步的HR图像$g_{t-1}$。$F$估测LR图像$x_{t-1}$和$x_t$之间的运动$v_t$，经过缩放之后在HR图像之间同样适用，将$g_{t-1}$变为扭曲后的帧$W(g_{t-1}, v_t)$。与以前的方法不同，这两个网络学习的是图像剩余，也就是HR图像和双立方插值后的LR图像的差别，学习剩余可以使训练过程更加稳定。</p>
+<center><img src="/images/64.png" alt=""></center>
+
+<p>时空判别器$D$的结构如下图所示，接收三张连续图像的三元组，50%的真实数据和50%的生成数据混合，然后做出判断$0$或$1$。</p>
+<center><img src="/images/65.png" alt=""></center>
+
+<h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><p>文中提出对抗结构会造成一种“漂移”的问题，大概就是空间细节缺失。因此他们新提出了一种损失函数“Ping-Pong Loss”，如下图所示。原理就是生成的高分辨率帧$g_t$应该与输入帧序列是正向还是反向无关，因此如果将输入帧序列反向，结果$g’_t$应该与$g_t$相同。Ping-Pong Loss即为计算所有$g_t$和$g’_t$差值的二范数之和。</p>
+<p>$$\mathcal{L}_{pp}=\sum_{i=1}^{n-1}||g_t-g’_t||_2$$</p>
+<center><img src="/images/66.png" alt=""></center>
+
+<h3 id="效果-1"><a href="#效果-1" class="headerlink" title="效果"></a>效果</h3><center><img src="/images/67.png" alt=""></center>
+
+<h2 id="5-Deep-Video-Super-Resolution-Network-Using-Dynamic-Upsampling-Filters-Without-Explicit-Motion-Compensation"><a href="#5-Deep-Video-Super-Resolution-Network-Using-Dynamic-Upsampling-Filters-Without-Explicit-Motion-Compensation" class="headerlink" title="[5] Deep Video Super-Resolution Network Using Dynamic Upsampling Filters Without Explicit Motion Compensation"></a><a href="http://openaccess.thecvf.com/content_cvpr_2018/papers/Jo_Deep_Video_Super-Resolution_CVPR_2018_paper.pdf" target="_blank" rel="external">[5] Deep Video Super-Resolution Network Using Dynamic Upsampling Filters Without Explicit Motion Compensation</a></h2><h3 id="简介-2"><a href="#简介-2" class="headerlink" title="简介"></a>简介</h3><p>视频超分辨率(VSR)可以逐帧采用单图片超分辨率的网络完成，但是帧之间并没有时间相关性(temporal relationship)，所以很可能连续的帧之间连接不自然，造成闪烁失真(flickering artifact)。</p>
+<p>传统的VSR算法都包含两个步骤：1.动作估测及补偿；2.上采样。其存在的问题是结果过于依赖精确的动作估测，还有输出的高分辨率图像是由很多个动作补偿后的低分辨率图像混合经过CNN得到的，这样可能使高分辨率图像出现模糊。</p>
+<p>这篇论文提出了一个新的端到端深度神经网络模型，与之前的方法有根本的差别。这个模型并没有显式地计算相邻帧之间的动作补偿，而是隐式运用了动作信息来生成“动态上采样滤镜(dynamic upsampling filters)”。生成的每张高分辨率图像是由一张低分辨率图像(input center frame)经过一系列filters得到的，如下图所示，并不直接结合多个图像的信息，因此最终可以得到更清晰、时间一致的高分辨率视频。</p>
+<center><img src="/images/58.png" alt=""></center>
+
+<h3 id="方法-3"><a href="#方法-3" class="headerlink" title="方法"></a>方法</h3><p>为了得到动态上采样滤镜，提出了Dynamic Filter Network(DFN)，输入一系列连续的低分辨率图像帧集合${X_{t-N:t+N}}$，假设要将$H\times W$的图像超分辨率至$rH\times rW$，输出$r^2HW$个filter，每个低分辨率图像中的像素点$(x,y)$对应$r^2$个filter，记为$F_t^{x,y,i,j}$，用来生成目标高分辨率图像中的$r^2$个像素。filter的大小可以任意确定，这篇论文中用的是$5\times 5$。另外，为了保留时空信息，将2D卷积层改为了3D卷积层。</p>
+<p>除了filter外，还需要加一个residual剩余图，其中包含图像高频的细节。生成residual的网络和和生成filter的网络结构基本一致，参数也是共享的。具体网络结构由下图所示。</p>
+<center><img src="/images/59.png" alt=""></center>
+
+<h3 id="效果-2"><a href="#效果-2" class="headerlink" title="效果"></a>效果</h3><center><img src="/images/60.png" alt=""></center><br><center><img src="/images/61.png" alt=""></center>
 
             <div class="clearfix"></div>
             <hr class="nogutter">
