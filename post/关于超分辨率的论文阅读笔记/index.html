@@ -328,7 +328,7 @@
 <p>其中$\gamma_{\mathrm{C}}$和$\gamma_{\mathrm{P}}$分别代表GAN和Perceptual Loss的权重。</p>
 <h2 id="3-Real-Time-Single-Image-and-Video-Super-Resolution-Using-an-Efficient-Sub-Pixel-Convolutional-Neural-Network"><a href="#3-Real-Time-Single-Image-and-Video-Super-Resolution-Using-an-Efficient-Sub-Pixel-Convolutional-Neural-Network" class="headerlink" title="[3] Real-Time Single Image and Video Super-Resolution Using an Efficient Sub-Pixel Convolutional Neural Network"></a><a href="https://arxiv.org/pdf/1609.05158v2.pdf" target="_blank" rel="external">[3] Real-Time Single Image and Video Super-Resolution Using an Efficient Sub-Pixel Convolutional Neural Network</a></h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>许多方法将多图片假设成同一场景的不同视角，可以看作多图像SR，利用显示冗余信息。而本文的方法是单图像SR(SISR)，利用隐式冗余信息。</p>
 <h3 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h3><p>流行的SISR方法可以分为基于边缘、基于图像统计、基于patch，以及基于稀疏度。基于稀疏度的方法是将图像编码成一些原子图片的组合，之后通过训练将LR和HR对应起来。但是这个方法的缺点是通过非线性重建来加入稀疏度限制需要花费很大计算量。</p>
-<p>这篇文章所用网络的结构如图所示。先提取LR图像的feature map，最后再进行上采样。前面是$l$层的CNN，最后一层是一个“亚像素卷积层(ESPCN)”，采用了$\frac{1}{r}$步长的卷积，每一步将$H\times W\times C$的输入图像转化为$H\times W\times C\cdot r^2$的特征图像，然后再按图中的方法重新排列(shuffle)成$rH\times rW \times C$。这个分数步长卷积在论文<a href="https://people.eecs.berkeley.edu/~jonlong/long_shelhamer_fcn.pdf" target="_blank" rel="external">Fully Convolutional Networks for Semantic Segmentation</a>中有介绍，具体的实现方法是双线性插值。</p>
+<p>这篇文章所用网络的结构如图所示。先提取LR图像的$r^2$个通道feature map，最后再进行上采样。前面是$l$层的CNN，最后一层是一个“亚像素卷积层(ESPCN)”，每一步将$H\times W\times C\cdot r^2$的特征图像按图中的方法重新排列(shuffle)成$rH\times rW \times C$。</p>
 <center><img src="/images/62.png" alt=""></center>
 
 <h3 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h3><center><img src="/images/63.png" alt=""></center>
@@ -353,7 +353,7 @@
 <p>这篇论文提出了一个新的端到端深度神经网络模型，与之前的方法有根本的差别。这个模型并没有显式地计算相邻帧之间的动作补偿，而是隐式运用了动作信息来生成“动态上采样滤镜(dynamic upsampling filters)”。生成的每张高分辨率图像是由一张低分辨率图像(input center frame)经过一系列filters得到的，如下图所示，并不直接结合多个图像的信息，因此最终可以得到更清晰、时间一致的高分辨率视频。</p>
 <center><img src="/images/58.png" alt=""></center>
 
-<h3 id="方法-3"><a href="#方法-3" class="headerlink" title="方法"></a>方法</h3><p>为了得到动态上采样滤镜，提出了Dynamic Filter Network(DFN)，输入一系列连续的低分辨率图像帧集合${X_{t-N:t+N}}$，假设要将$H\times W$的图像超分辨率至$rH\times rW$，输出$r^2HW$个filter，每个低分辨率图像中的像素点$(x,y)$对应$r^2$个filter，记为$F_t^{x,y,i,j}$，用来生成目标高分辨率图像中的$r^2$个像素。filter的大小可以任意确定，这篇论文中用的是$5\times 5$。另外，为了保留时空信息，将2D卷积层改为了3D卷积层。</p>
+<h3 id="方法-3"><a href="#方法-3" class="headerlink" title="方法"></a>方法</h3><p>为了得到动态上采样滤镜，提出了Dynamic Filter Network(DFN)，输入一系列连续的低分辨率图像帧集合${X_{t-N:t+N}}$，假设要将$H\times W$的图像超分辨率至$rH\times rW$，输出$r^2HW$个filter，每个低分辨率图像中的像素点$(x,y)$对应$r^2$个filter，记为$F_t^{x,y,i,j}$，用来生成目标高分辨率图像中的$r^2$个像素。filter的大小可以任意确定，这篇论文中用的是$5\times 5$，那么像素点$(x,y)$周围的$5\times 5$区域与每一个filter做点积，然后再加上同样方法训练出的剩余图，就得到了最终的输出图片的$r^2$个像素。另外，为了保留时空信息，将2D卷积层改为了3D卷积层。</p>
 <p>除了filter外，还需要加一个residual剩余图，其中包含图像高频的细节。生成residual的网络和和生成filter的网络结构基本一致，参数也是共享的。具体网络结构由下图所示。</p>
 <center><img src="/images/59.png" alt=""></center>
 
