@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<!--[if lte IE 8 ]>
+<html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<!--
+***************  *      *     *
+      8          *    *       *
+      8          *  *         *
+      8          **           *
+      8          *  *         *
+      8          *    *       *
+      8          *      *     *
+      8          *        *   ***********    -----Theme By Kieran(http://go.kieran.top)
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<!--<![endif]-->
+
+<head>
+  <title>Circuit Complexity学习笔记 | 魔法炮</title>
+  <!-- Meta data -->
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="魔法炮">
+    <meta name="author" content="ZidaneAndMessi">
+    <meta name="description" content="ZidaneAndMessi的博客" />
+    <meta name="keywords" content="" />
+
+    <!-- Favicon, (keep icon in root folder) -->
+    <link rel="Shortcut Icon" href="/img/favicon.ico" type="image/ico">
+
+    <link rel="alternate" href="/atom.xml" title="魔法炮" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/all.css" media="screen" type="text/css">
+	
+    <link rel="stylesheet" href="/highlightjs/vs.css" type="text/css">
+    
+ 
+
+    <!-- Custom stylesheet, (add custom styles here, always load last) -->
+    <!-- Load our stylesheet for IE8 -->
+    <!--[if IE 8]>
+    <link rel="stylesheet" type="text/css" href="/css/ie8.css" />
+    <![endif]-->
+
+    <!-- Google Webfonts (Monserrat 400/700, Open Sans 400/600) -->
+    <link href='//fonts.useso.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <link href='//fonts.useso.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+
+    <!-- Load our fonts individually if IE8+, to avoid faux bold & italic rendering -->
+    <!--[if IE]>
+    <link href='http://fonts.useso.com/css?family=Montserrat:400' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.useso.com/css?family=Montserrat:700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.useso.com/css?family=Open+Sans:400' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.useso.com/css?family=Open+Sans:600' rel='stylesheet' type='text/css'>
+    <![endif]-->
+
+    <!-- jQuery | Load our jQuery, with an alternative source fallback to a local version if request is unavailable -->
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
+
+    <!-- Load these in the <head> for quicker IE8+ load times -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="/js/html5shiv.min.js"></script>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+
+
+
+
+
+
+
+
+  
+  
+  
+
+  
+  <style>.col-md-8.col-md-offset-2.opening-statement img{display:none;}</style>
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body id="index" class="lightnav animsition">
+
+      <!-- ============================ Off-canvas navigation =========================== -->
+
+    <div class="sb-slidebar sb-right sb-style-overlay sb-momentum-scrolling">
+        <div class="sb-close" aria-label="Close Menu" aria-hidden="true">
+            <img src="/img/close.png" alt="Close"/>
+        </div>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu">
+            <li><a href="/" class="animsition-link">主页</a></li>
+            <li><a href="/archives" class="animsition-link">目录</a></li>
+            <!-- Dropdown Menu -->
+			 
+            
+        	<li>
+        		<a class="sb-toggle-submenu">分类<span class="sb-caret"></span></a>
+            	<ul class="sb-submenu">
+				  	
+				    <li><a href="/categories/Coding/" class="animsition-link">Coding<small>(2)</small></a></li>
+				    
+				    <li><a href="/categories/Game/" class="animsition-link">Game<small>(1)</small></a></li>
+				    
+				    <li><a href="/categories/Interest/" class="animsition-link">Interest<small>(5)</small></a></li>
+				    
+				    <li><a href="/categories/Lab/" class="animsition-link">Lab<small>(4)</small></a></li>
+				    
+				    <li><a href="/categories/Life/" class="animsition-link">Life<small>(8)</small></a></li>
+				    
+				    <li><a href="/categories/Math/" class="animsition-link">Math<small>(2)</small></a></li>
+				    
+				    <li><a href="/categories/OI/" class="animsition-link">OI<small>(4)</small></a></li>
+				    
+				    <li><a href="/categories/Physics/" class="animsition-link">Physics<small>(1)</small></a></li>
+				    
+				</ul>
+        	</li>
+			
+            
+            <li>
+                <a class="sb-toggle-submenu">友情链接<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                    <li><a href="http://kuribohg.github.io/" target="_blank">KuribohG</a></li>
+                    
+                    <li><a href="http://orzwzh.com/" target="_blank">wzh</a></li>
+                    
+                    <li><a href="http://www.cnblogs.com/xuruifan/" target="_blank">xuruifan</a></li>
+                    
+                    <li><a href="http://blog.csdn.net/commonc/" target="_blank">commonc</a></li>
+                    
+                    <li><a href="http://blog.csdn.net/neither_nor/" target="_blank">neither_nor</a></li>
+                    
+                    <li><a href="http://footoredo.cat/" target="_blank">footoredo</a></li>
+                    
+                    <li><a href="http://littleround.cn/" target="_blank">littleround</a></li>
+                    
+                </ul>
+            </li>
+            
+        </ul>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu secondary">
+            <li><a href="/message">留言板</a></li>
+            <li><a href="/about">关于我</a></li>
+            <li><a href="http://106.14.159.92/" target="_blank">魔法炮OJ</a></li>
+        </ul>
+        <form>
+    </div>
+    
+    <!-- ============================ END Off-canvas navigation =========================== -->
+
+    <!-- ============================ #sb-site Main Page Wrapper =========================== -->
+
+    <div id="sb-site">
+        <!-- #sb-site - All page content should be contained within this id, except the off-canvas navigation itself -->
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+        <div id="navigation" class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <!-- Nav logo -->
+                    <div class="logo">
+                        <a href="/" title="Logo" class="animsition-link">
+                         <img src="/img/logo.png" alt="Logo" width="35px;"/> 
+                        </a>
+                    </div>
+                    <!-- // Nav logo -->
+                    <!-- Info-bar -->
+                    <nav>
+                        <ul class="nav">
+                            <li><a href="/" class="animsition-link">魔法炮</a></li>
+                            <li class="nolink">ZIDANEANDMESSI</li>
+                            
+                            <li><a href="https://github.com/zidaneandmessi/" title="Github" target="_blank"><i class="icon-github"></i></a></li>
+                            
+                            
+                            <li><a href="https://twitter.com/zidaneandmessi/" title="Twitter" target="_blank"><i class="icon-twitter"></i></a></li>
+                            
+                            
+                            <li><a href="https://www.facebook.com/zidaneandmessi/" title="Facebook" target="_blank"><i class="icon-facebook"></i></a></li>
+                            
+                            
+                            
+                            <li><a href="http://weibo.com/zidaneandmessi/" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a></li>
+                            
+                            <li class="nolink">Here I am.</li>
+                            
+                        </ul>
+                    </nav>
+                    <!--// Info-bar -->
+                </div>
+                <!-- // .container -->
+                <div class="learnmore sb-toggle-right">More</div>
+                <button type="button" class="navbar-toggle menu-icon sb-toggle-right" title="More">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar before"></span>
+                <span class="icon-bar main"></span>
+                <span class="icon-bar after"></span>
+                </button>
+            </div>
+            <!-- // .navbar-inner -->
+        </div>
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+        <!-- ============================ Hero Image =========================== -->
+
+        <section id="hero" class="scrollme">
+            <div class="container-fluid element-img" style="background: url(/img/bg_img.jpg) no-repeat center center fixed;background-size: cover">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 vertical-align cover boost text-center">
+                        <div class="center-me animateme" data-when="exit" data-from="0" data-to="0.6" data-opacity="0" data-translatey="100">
+                            <div>
+                            	
+                                <h2></h2>
+                                <p></p>
+                                
+				    			
+                                <h2></h2>
+                                <p></p>
+                                
+				    			
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- // .col-md-12 -->
+                </div>
+                <div class="herofade beige-dk"></div>
+            </div> 
+        </section>
+
+        <!-- Height spacing helper -->
+        <div class="heightblock"></div>
+        <!-- // End height spacing helper -->
+
+        <!-- ============================ END Hero Image =========================== -->
+      
+<section id="intro">
+    <div class="container">
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2020-02-09T09:42:22.000Z" itemprop="datePublished">
+          2020-02-09
+      </time>
+    
+    
+    
+    | 
+    <a href='/categories/Math/'>Math</a>
+    
+    
+    
+    
+    
+    | 
+    <a href='/tags/逻辑/'>逻辑</a>
+    
+    
+    
+</span>
+                <h1>Circuit Complexity学习笔记</h1>
+            </div>
+        </div>
+        <div class="col-md-8 col-md-offset-2">
+      		<p>$n$元<strong>布尔函数</strong>：定义域$\{0,1\}^n$，对应域$\{0,1\}$.<br><a id="more"></a></p>
+<p>一个常见问题：给定一些简单函数和一个布尔函数$f$，用这些简单函数计算这个布尔函数的复杂度。最自然的衡量方式就是数一下一共用了多少个简单函数。</p>
+<p>令$\mathcal{B}$为一个布尔函数的集合，叫做<strong>基本集</strong>。对于其中一个函数$g\in \mathcal{B}$，定义它的输入个数叫做<strong>扇入</strong>(fan-in)。一般的逻辑门都是$2$扇入，也有无限制扇入。</p>
+<p>在基本集$\mathcal{B}$上定义一个$n$个输入，大小为$s$的电路$C$。$C$包含一个$s+n+2$个点的有向无环图，包括$n$个源点和一个汇点。这些点就被称作<strong>门</strong>。对于前$n$个门，这些门拓扑序的第$i$个就对应第$i$个输入位，通常叫做<strong>输入门</strong>。第$n+1$到$s$个门各自对应一个$\mathcal{B}$中的函数$f_j$，扇入数就是这个点的入度。我们有时候简称这个电路$C$为$\mathcal{B}$-电路。</p>
+<p>给定一个$n$位的输入$x=(x_1,x_2,…,x_n)\in \{0,1\}^n$，令第$i$个门的值为$v_i=x_i$，第$j=n+1,…,s$个门的值为$v_j=f_j(v_{i_1}, …, v_{i_k})$,其中$i_1,…,i_k &lt; j$是与点$j$连边的所有点的拓扑序。<font color="#c0c0c0">其实就是用这些输入把这个电路模拟了一遍，算出每个节点的值。</font></p>
+<p>有些电路会添加两个源点$v_0$和$v_1$，分别定义成常值$0$和$1$，以满足其他门的需要。常值可以通过常值函数$ZERO=(x\land \neg x), ONE=(x\lor \neg x)$来得到。</p>
+<p>度量电路的大小也就是复杂度的计算。有很多种度量方法，比如直接用电路的大小$size(C)$。电路的<strong>深度</strong>，定义为从任何源点到汇点最长的距离。还有<strong>导线复杂度</strong>，就是有向无环图中边的数量，这个数目一定不超过$d\times size(C)$。</p>
+<p>下面就是一个模$3$函数电路的例子，这是表示这个函数最小的电路。其中$\oplus$是异或，$\equiv$是$EQUALS$函数，也就是异或的取反。</p>
+<center><img src="/images/68.png" alt=""></center>
+
+<p>定义$\mathcal{B}$上表示$f$的电路大小最小值为$C_{\mathcal{B}}(f)$, 这个值就叫做$f$在$\mathcal{B}$上的<strong>电路复杂度</strong>。</p>
+<p>$\mathcal{B}$的选择一般来说有两个经常研究的，一个是$B_k$，就是所有$k$元布尔函数的全集，一共有$2^{2^k}$个。另外一个是$U_2$，也就是$AND,OR,NOT$的组合，一共$14$个函数，计算大小的时候只算$AND$和$OR$门的数量，不算$NOT$。</p>
+<p>很显然有命题：对所有函数$f$，$C_{B_2}(f) = C_{B_2-\{XOR, EQUALS\}}(f)$.</p>
+<p>还有一个命题：对所有函数$f$，$C_{B_2}(f) \leq C_{B_2}(f)$.</p>
+<p>如果所有函数都能被$\mathcal{B}$上的一个电路表示，那么就称$\mathcal{B}$为<strong>完备的</strong>。比如$B_2$和$U_2$就都是完备的。</p>
+<p>定理：$\mathcal{B}$为一个有常数扇入的完备基本集，则对所有布尔函数$f$，$C_B(f)=\Theta(C_{U_2}(f))=\Theta(C_{B_2}(f))$.</p>
+<p>语言和电路的对应：对于一个语言$L\subseteq \{0,1\}^{*}$, 令$L_n=\{0,1\}^n\cap L$, 定义$s:\mathbb{N}\rightarrow\mathbb{N}$和$d:\mathbb{N}\rightarrow\mathbb{N}$两个函数。如果对于所有$n$都存在电路$C_n$使得$size(C_n)\leq s(n), depth(C_n)\leq d(n)$, 而且对于所有$x$, $C_n(x)=1\leftrightarrow x\in L_n$, 就称$L$有$s(n)$大小和$d(n)$深度的电路。反之，一个电路也可以计算一种语言，也就是所有输出为$1$的输入集合。</p>
+<p>一些常见的电路复杂度：</p>
+<h2 id="AC-0"><a href="#AC-0" class="headerlink" title="AC$^0$"></a>AC$^0$</h2><p>一类<strong>布尔电路</strong>$(C_n)_{n\in\mathbb{N}}$被称为AC$^0$电路，如果满足对于所有的$n\in\mathbb{N}$</p>
+<p>(i)$C_n$是一个从$\{0,1\}^n$到$\{0,1\}$的函数。</p>
+<p>(ii)$C_n$的深度有一个固定常数的上界。</p>
+<p>(iii)$C_n$的大小有$n$的多项式界。</p>
+<h2 id="Tree-depth-quantifier-elimination-and-quantifier-rank"><a href="#Tree-depth-quantifier-elimination-and-quantifier-rank" class="headerlink" title="Tree-depth, quantifier elimination, and quantifier rank"></a><a href="https://basics.sjtu.edu.cn/~chen/papers/tdqfli.pdf" target="_blank" rel="external">Tree-depth, quantifier elimination, and quantifier rank</a></h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>对于一类有限图$K$有下列三个命题：</p>
+<p>(i) $K$的树高有上限。</p>
+<p>(ii) 一阶逻辑FO在$K$上有有效的<strong>广义量词消去</strong>。</p>
+<p>(iii) $K$上用于检验FO的模型在para-AC$^0$中。</p>
+<p>我们证明(i)$\Rightarrow(ii), (ii)\Leftrightarrow(iii)$，</p>
+
+            <div class="clearfix"></div>
+            <hr class="nogutter">
+        </div>
+        <nav class="pagination" role="pagination">
+    
+    
+    <a class="pull-right" href="/post/关于生成对抗样本的论文阅读笔记/">
+        关于生成对抗样本的论文阅读笔记 →
+    </a>
+    
+</nav>
+
+        <div class="duoshuo">
+<div class="ds-thread" data-thread-key="post/Circuit Complexity学习笔记/" data-title="Circuit Complexity学习笔记" data-url="http://zidaneandmessi.github.io/post/Circuit Complexity学习笔记/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"zidaneandmessi"};
+(function() {
+	var ds = document.createElement('script');
+	ds.type = 'text/javascript';ds.async = true;
+	ds.src = '//zidaneandmessi.github.io/embed.txt';
+	ds.charset = 'UTF-8';
+	(document.getElementsByTagName('head')[0] 
+	 || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+
+<!--PC��-->
+<div id="SOHUCS" sid="post/Circuit Complexity学习笔记/" data-title="Circuit Complexity学习笔记"></div>
+<script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
+<script type="text/javascript">
+window.changyan.api.config({
+appid: 'cyt80Hd7O',
+conf: 'prod_89e85e3705f1e755a6b5553e14689c10'
+});
+</script></div>
+    </div>
+</section>
+
+
+      
+<!-- ============================ Footer =========================== -->
+
+<footer>
+    <div class="container">
+    
+            <div class="copy">
+                <p>
+                    &copy; 2016 ZidaneAndMessi
+                </p>
+            </div>
+            <div class="social">
+            <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <span id="busuanzi_container_site_pv">
+			  <font size=1 color=#FFFFFF>
+			  总访客数<span id="busuanzi_value_site_uv"></span>人　总访问量<span id="busuanzi_value_site_pv"></span>次 
+			  </font>
+			  </span>
+                
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+</footer>
+
+<!-- ============================ END Footer =========================== -->
+      <!-- Load our scripts -->
+        
+<!-- Resizable 'on-demand' full-height hero -->
+<script type="text/javascript">
+    
+    var resizeHero = function () {
+        var hero = $(".cover,.heightblock"),
+            window1 = $(window);
+        hero.css({
+            "height": window1.height()
+        });
+    };
+    
+    resizeHero();
+    
+    $(window).resize(function () {
+        resizeHero();
+    });
+</script>
+<script src="/js/plugins.min.js"></script><!-- Bootstrap core and concatenated plugins always load here -->
+<script src="/js/jquery.flexslider-min.js"></script><!-- Flexslider plugin -->
+<script src="/js/scripts.js"></script><!-- Theme scripts -->
+
+<!-- Initiate flexslider plugin -->
+<script type="text/javascript">
+    $(document).ready(function($) {
+      $('.flexslider').flexslider({
+        animation: "fade",
+        prevText: "",
+        nextText: "",
+        directionNav: true
+      });
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    }); 
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+
+</script>
+
+</body>
+</html>
